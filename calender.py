@@ -12,8 +12,7 @@ from googleapiclient.errors import HttpError
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-
-def main(title, date, description=''):
+def get_credentials():
     creds = None
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
@@ -27,7 +26,10 @@ def main(title, date, description=''):
 
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
+    return creds
 
+
+def create_HW(creds, title, date, calendar_id, description=''):
     try:
         service = build('calendar', 'v3', credentials=creds)
         event = {
@@ -50,12 +52,65 @@ def main(title, date, description=''):
         },  
         }
 
-        event = service.events().insert(calendarId='primary', body=event).execute()
+        event = service.events().insert(calendarId=calendar_id, body=event).execute()
         print('Event created: %s' % (event.get('htmlLink')))
 
     except HttpError as error:
         print('An error occurred: %s' % error)
 
 
-if __name__ == '__main__':
-    main()
+def create_summary(creds):
+    service = build('calendar', 'v3', credentials=creds)
+    calendar = {
+    'summary': 'HW',
+    'timeZone': 'UTC+8'
+}
+    created_calendar = service.calendars().insert(body=calendar).execute()
+    print ('the created calendar ID is = ', created_calendar['id'])
+
+
+def get_calendar_id(creds):
+    service = build('calendar', 'v3', credentials=creds)
+    page_token = None
+    while True:
+        calendar_list = service.calendarList().list(pageToken=page_token).execute()
+        for i, calendar_list_entry in enumerate(calendar_list['items']):
+            print ('calendar_list_entry = ', calendar_list_entry['summary'])
+            if calendar_list_entry['summary'] == 'HW':
+                return calendar_list_entry['id']
+        page_token = calendar_list.get('nextPageToken')
+        if not page_token:
+            create_summary(creds)
+
+
+def get_exsisting_HW(creds, calendar_id):
+    try:
+        service = build('calendar', 'v3', credentials=creds)
+
+        now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
+        print('Getting the upcoming 10 events')
+        events_result = service.events().list(calendarId=calendar_id, timeMin=now,
+                                              maxResults=10, singleEvents=True,
+                                              orderBy='startTime').execute()
+        events = events_result.get('items', [])
+
+        if not events:
+            print('No upcoming events found.')
+            return
+        l = []
+        for event in events:
+            #print(event['summary'])
+            l.append(event['summary'])
+            start = event['start'].get('dateTime', event['start'].get('date'))
+            print(start, event['summary'])
+        return l
+
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+
+
+
+creds = get_credentials()
+calendar_id = get_calendar_id(creds)
+create_HW(creds, '國文小考測驗', '2023-04-01', calendar_id, 'Test')
+items = get_exsisting_HW(creds, calendar_id)                        #can't use one line for loop

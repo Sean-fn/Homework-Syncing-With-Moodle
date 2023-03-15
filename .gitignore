@@ -3,6 +3,7 @@ credentials.json
 signup.html
 signup-1.html
 assets/
+test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

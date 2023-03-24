@@ -14,17 +14,17 @@ SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 def get_credentials():
     creds = None
-    if os.path.exists('token.json'):
-        creds = Credentials.from_authorized_user_file('token.json', SCOPES)
+    if os.path.exists('google_calendar/token.json'):
+        creds = Credentials.from_authorized_user_file('google_calendar/token.json', SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
-                'credentials.json', SCOPES)
+                'google_calendar/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
-        with open('token.json', 'w') as token:
+        with open('google_calendar/token.json', 'w') as token:
             token.write(creds.to_json())
     return creds
 
@@ -112,5 +112,5 @@ def get_exsisting_HW(creds, calendar_id):
 
 creds = get_credentials()
 calendar_id = get_calendar_id(creds)
-create_HW(creds, '國文小考測驗', '2023-04-01', calendar_id, 'Test')
+# create_HW(creds, '國文小考測驗', '2023-04-01', calendar_id, 'Test')
 items = get_exsisting_HW(creds, calendar_id)                        #can't use one line for loop

@@ -4,6 +4,10 @@ signup.html
 signup-1.html
 assets/
 test.py
+moodleAcc.json
+archive/
+moodle_creds.json
+data.json
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

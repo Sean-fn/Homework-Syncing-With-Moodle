@@ -12,10 +12,10 @@ from googleapiclient.errors import HttpError
 # If modifying these scopes, delete the file token.json.
 SCOPES = ['https://www.googleapis.com/auth/calendar']
 
-def get_credentials():
+def get_credentials(token_file='google_calendar/g_calendar_token.json'):
     creds = None
-    if os.path.exists('google_calendar/token.json'):
-        creds = Credentials.from_authorized_user_file('google_calendar/token.json', SCOPES)
+    if os.path.exists(token_file):
+        creds = Credentials.from_authorized_user_file(token_file, SCOPES)
     if not creds or not creds.valid:
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
@@ -24,17 +24,18 @@ def get_credentials():
                 'google_calendar/credentials.json', SCOPES)
             creds = flow.run_local_server(port=0)
 
-        with open('google_calendar/token.json', 'w') as token:
+        with open(token_file, 'w') as token:
             token.write(creds.to_json())
     return creds
 
 
-def create_HW(creds, title, date, calendar_id, description=''):
+def create_HW(creds, title, date, url, calendar_id, description=''):
     try:
         service = build('calendar', 'v3', credentials=creds)
         event = {
         'summary': title,
         'description': description,
+        'location': url, 
         'start': {
             'date': date,
             'timeZone': 'UTC+8',
@@ -46,8 +47,7 @@ def create_HW(creds, title, date, calendar_id, description=''):
         'reminders': {
             'useDefault': False,
             'overrides': [
-            {'method': 'popup', 'minutes': 24 * 60},
-            {'method': 'popup', 'minutes': 24 * 60 * 3},
+            {'method': 'popup', 'minutes': 24 * 60 * 3 + 120},
             ],
         },  
         }
@@ -63,7 +63,8 @@ def create_summary(creds):
     service = build('calendar', 'v3', credentials=creds)
     calendar = {
     'summary': 'HW',
-    'timeZone': 'UTC+8'
+    'timeZone': 'UTC+8', 
+    
 }
     created_calendar = service.calendars().insert(body=calendar).execute()
     print ('the created calendar ID is = ', created_calendar['id'])
@@ -83,6 +84,15 @@ def get_calendar_id(creds):
             create_summary(creds)
 
 
+def get_event_id(creds, calendar_id):
+    service = build('calendar', 'v3', credentials=creds)
+    events_result = service.events().list(calendarId=calendar_id, maxResults=2500, singleEvents=True, orderBy='startTime').execute()
+    events = events_result.get('items', [])
+    for event in events:
+        print(event['id'])
+        print(event['description'])
+
+
 def get_exsisting_HW(creds, calendar_id):
     try:
         service = build('calendar', 'v3', credentials=creds)
@@ -90,23 +100,26 @@ def get_exsisting_HW(creds, calendar_id):
         now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
         print('Getting the upcoming 10 events')
         events_result = service.events().list(calendarId=calendar_id, timeMin=now,
-                                              maxResults=10, singleEvents=True,
+                                              maxResults=100, singleEvents=True,
                                               orderBy='startTime').execute()
         events = events_result.get('items', [])
 
         if not events:
             print('No upcoming events found.')
             return
-        l = []
+        summary = []
+        description = []
         for event in events:
             #print(event['summary'])
-            l.append(event['summary'])
+            summary.append(event['summary'])
+            description.append(event['description'])
             start = event['start'].get('dateTime', event['start'].get('date'))
-            print(start, event['summary'])
-        return l
+            print(start, event['summary'], '\n', event['description'])
+        return summary, description
 
     except HttpError as error:
         print('An error occurred: %s' % error)
+
 
 
 

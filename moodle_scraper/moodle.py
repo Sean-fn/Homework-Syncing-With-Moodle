@@ -11,10 +11,11 @@ class Moodle():
             'assessmentName': [],
             'assessmentDueDate': [],
             'assessmentDueTime': [],
-            'assessmentDetail': []
-        }
+            'assessmentDetail': [], 
+            'assessmentUrl': []
+            }
 
-        for courrse_index in range(15):
+        for courrse_index in range(2, 3):
             course_name = self.scraper.get_course_name(courrse_index)
             if  not self.scraper.navigate_to_course(courrse_index):
                 print('No course found')
@@ -25,7 +26,6 @@ class Moodle():
             for assessment_index in range(len(assessment_links)):
                 if not self.scraper.navigate_to_assessment(assessment_index, assessment_type = [' 作業', ' 測驗卷']):
                     #data['assessmentName'].append(course_name + ' | ' + 'No assessment found')
-                    print('No assessment found!!!!!!!!!')
                     continue
 
                 #assessment page
@@ -36,17 +36,21 @@ class Moodle():
                 print('assessmentDeadline: ', assessmentDeadline)
                 assesmentDetail = self.scraper.get_assessment_detail()
                 print('assesmentDetail: ', assesmentDetail)
+                assesmentUrl = self.scraper.get_assesment_url()
+                print('assesmentUrl: ', assesmentUrl)
                 #storing data
                 data['assessmentName'].append(course_name + ' | ' + assessmentName)
                 data['assessmentDueDate'].append(assessmentDeadline)
                 data['assessmentDueTime'].append('')
                 data['assessmentDetail'].append(assesmentDetail)
+                data['assessmentUrl'].append(assesmentUrl)
                 self.moodle.driver.back()
                 print('上一頁')
             self.moodle.driver.back()
         self.moodle.logout()
         print(data)
         return data
+
 
     def data_process(self, data):
         #data['assessmentDeadline'] = [date.replace('年', '-').replace('月', '-').replace('日', '') for date in data['assessmentDeadline']]
@@ -60,7 +64,6 @@ class Moodle():
                 data['assessmentDueTime'][i] = None
 
         return data
-
 
 
 def __main__():

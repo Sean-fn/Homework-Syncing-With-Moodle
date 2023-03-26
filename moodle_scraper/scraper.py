@@ -43,6 +43,12 @@ class MoodleScraper():
                 return True
         return False
     
+    def get_assesment_url(self):
+        try:
+            return self.driver.current_url
+        except:
+            return ''
+    
     def get_assessment_name(self):
         try:
             assessment_name = self.driver.find_element(By.TAG_NAME, 'h2').text
@@ -57,21 +63,40 @@ class MoodleScraper():
         'sec': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[4]/td[2]'],
         'third': [By.XPATH, '//*[@id="yui_3_15_0_3_1679661660567_303"]'],
         'testSheet': [By.XPATH, '//*[@id="region-main"]/div/div[1]/p[2]'],
+        'testSheet2': [By.XPATH, '//*[@id="yui_3_15_0_3_1679715868097_305"]/div[1]/p[3]'],
         }
+
         for locator in locators.values():
             try:
+                print('exicute = ', locator)
                 assessment_deadline = self.driver.find_element(*locator)
+                print('!!!!!!!!assessment_deadline = ', assessment_deadline.get_attribute('innerHTML'))
                 return assessment_deadline.get_attribute('innerHTML')
             except NoSuchElementException:
                 print('NoSuchElementException: Assessment deadline not found')
-                return ''
+                print('finding next element')
+                continue
+        return ''
             
     def get_assessment_detail(self):
+        locators = {
+            'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
+            'testSheet': [By.XPATH, '//*[@id="region-main"]/div/table/tbody/tr/td[1]']
+        }
+        for locator in locators.values():
+            try:
+                status = self.driver.find_element(*locator).text
+                print('status = ', status)
+                if '已經完成' in status or '已繳交' in status: detailList = '作業狀態 : 已繳交✅\n\n'
+                else: detailList = '作業狀態 : 未繳交❌\n\n'
+                print('detailList = ', detailList)
+            except:
+                detailList = '作業狀態 : 無法讀取\n\n'
+                print('detailList = ', detailList)
+
         try:
-            detailList = ''
-            detail = self.driver.find_elements(By.XPATH, '//*[@id="region-main"]/div/div[1]//p')      #value of status in the assesment page
+            detail = self.driver.find_elements(By.XPATH, '//*[@id="region-main"]/div/div[1]//p')
             for m in range(len(detail)):
-                #print('共', len(detail), '/第', m+1, '個是', detail[m].text)
                 detailList += detail[m].text + '\n'
             return detailList
         except NoSuchElementException:

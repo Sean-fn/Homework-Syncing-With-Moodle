@@ -15,28 +15,33 @@ class Moodle():
             'assessmentUrl': []
             }
 
-        for courrse_index in range(2, 3):
+        for courrse_index in range(15):
             course_name = self.scraper.get_course_name(courrse_index)
             if  not self.scraper.navigate_to_course(courrse_index):
                 print('No course found')
                 continue
+            course_url = self.scraper.get_url()
 
             #course page
             assessment_links = self.moodle.driver.find_elements(By.CLASS_NAME, "instancename")
+            print(len(assessment_links), '個作業')
             for assessment_index in range(len(assessment_links)):
                 if not self.scraper.navigate_to_assessment(assessment_index, assessment_type = [' 作業', ' 測驗卷']):
-                    #data['assessmentName'].append(course_name + ' | ' + 'No assessment found')
                     continue
-
                 #assessment page
                 print('已進入作業')
                 assessmentName = self.scraper.get_assessment_name()
                 print('assessmentName: ', assessmentName)
+                if assessmentName in ['公佈欄', '']:
+                    if course_url != self.scraper.get_url():
+                        self.moodle.driver.back()
+                    print('assessmentName is empty and QUIT')
+                    continue
                 assessmentDeadline = self.scraper.get_assessment_deadline()
                 print('assessmentDeadline: ', assessmentDeadline)
                 assesmentDetail = self.scraper.get_assessment_detail()
                 print('assesmentDetail: ', assesmentDetail)
-                assesmentUrl = self.scraper.get_assesment_url()
+                assesmentUrl = self.scraper.get_url()
                 print('assesmentUrl: ', assesmentUrl)
                 #storing data
                 data['assessmentName'].append(course_name + ' | ' + assessmentName)
@@ -74,5 +79,4 @@ def __main__():
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':
-    pass
-    #__main__()
+    __main__()

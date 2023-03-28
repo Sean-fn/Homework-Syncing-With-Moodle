@@ -47,13 +47,27 @@ def create_HW(creds, title, date, url, calendar_id, description=''):
         'reminders': {
             'useDefault': False,
             'overrides': [
-            {'method': 'popup', 'minutes': 24 * 60 * 3 + 120},
+            {'method': 'popup', 'minutes': 24 * 60 * 2 + 120},
             ],
         },  
         }
 
         event = service.events().insert(calendarId=calendar_id, body=event).execute()
         print('Event created: %s' % (event.get('htmlLink')))
+
+    except HttpError as error:
+        print('An error occurred: %s' % error)
+
+
+def update_HW(creds, calendar_id, event_id='', description=''):
+    try:
+        service = build('calendar', 'v3', credentials=creds)
+        event = {
+        'description': description,
+        }
+
+        event = service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
+        print('Event updated: %s' % (event.get('htmlLink')))
 
     except HttpError as error:
         print('An error occurred: %s' % error)
@@ -93,12 +107,17 @@ def get_event_id(creds, calendar_id):
         print(event['description'])
 
 
+def split_descriptions(descriptions):
+    for i in range(len(descriptions)):
+        descriptions[i] = descriptions[i].split('\n', 1)[0]
+
+
 def get_exsisting_HW(creds, calendar_id):
     try:
         service = build('calendar', 'v3', credentials=creds)
 
         now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-        print('Getting the upcoming 10 events')
+        print('Getting the upcoming 100 events')
         events_result = service.events().list(calendarId=calendar_id, timeMin=now,
                                               maxResults=100, singleEvents=True,
                                               orderBy='startTime').execute()
@@ -106,16 +125,18 @@ def get_exsisting_HW(creds, calendar_id):
 
         if not events:
             print('No upcoming events found.')
-            return
+            return '', '', ''
         summary = []
-        description = []
+        descriptions = []
+        event_id = []
         for event in events:
             #print(event['summary'])
             summary.append(event['summary'])
-            description.append(event['description'])
+            descriptions.append(event['description'])
+            event_id.append(event['id'])
             start = event['start'].get('dateTime', event['start'].get('date'))
             print(start, event['summary'], '\n', event['description'])
-        return summary, description
+        return summary, descriptions, event_id
 
     except HttpError as error:
         print('An error occurred: %s' % error)

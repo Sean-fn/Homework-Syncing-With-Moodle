@@ -9,7 +9,7 @@ import json
 class MoodleScraper():
     def __init__(self, driver):
         self.driver = driver
-    
+
     def get_course_name(self, index):
         course_titles = self.driver.find_elements(By.TAG_NAME, 'h3')        #course title in the dashboard
         course_name = course_titles[index].text.split('[')[0][6:]
@@ -61,14 +61,14 @@ class MoodleScraper():
                 return True
         assessment_links[index].click()
         return False
-    
+
 
     def get_url(self):
         try:
             return self.driver.current_url
         except:
             return ''
-    
+
 
     def get_assessment_name(self):
         try:
@@ -160,8 +160,8 @@ class MoodleScraper():
                 dateJoin += dateSplited[j+1][:k]
         #data['assessmentDueDate'][i] = dateJoin
         return dateJoin
-    
-    
+
+
     def split_time(self, data):
         #for i in range(len(data['assessmentDueDate'])):
         return data.rsplit(' ', 1)[1]

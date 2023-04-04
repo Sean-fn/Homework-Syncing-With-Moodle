@@ -1,6 +1,6 @@
 from moodle_scraper.moodle import *
 from google_calendar.g_calendar import *
-from utils import checkDate, setReminder, findIndex
+from utils import checkDate, setReminder, findIndex, sameDescription
 
 
 def main():
@@ -34,7 +34,7 @@ def main():
             '''
             continue
         index = findIndex(hWname, gHW_names)
-        if moodle_data['assessmentDetail'][i] !=  gHW_descriptions[index]:
+        if sameDescription(moodle_data, gHW_descriptions, i, index):
             print('executing update_HW')
             update_HW(creds, calendar_id, moodle_data, i, reminder, event_id[index])
 

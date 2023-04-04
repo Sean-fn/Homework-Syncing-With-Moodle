@@ -18,3 +18,9 @@ def findIndex(hW_name, gHW_names):
             print('index = ', index, type(index))
             break
     return index
+
+def sameDescription(moodle_data, gHW_descriptions, i, index):
+    if moodle_data['assessmentDetail'][i] !=  gHW_descriptions[index]:
+        return True
+    else:
+        return False

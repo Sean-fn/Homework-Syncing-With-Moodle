@@ -1,15 +1,10 @@
-from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
-import json
 
 
 class MoodleScraper():
     def __init__(self, driver):
         self.driver = driver
-    
     def get_course_name(self, index):
         course_titles = self.driver.find_elements(By.TAG_NAME, 'h3')        #course title in the dashboard
         course_name = course_titles[index].text.split('[')[0][6:]
@@ -61,14 +56,12 @@ class MoodleScraper():
                 return True
         assessment_links[index].click()
         return False
-    
 
     def get_url(self):
         try:
             return self.driver.current_url
         except:
             return ''
-    
 
     def get_assessment_name(self):
         try:
@@ -101,7 +94,7 @@ class MoodleScraper():
         return ''
             
 
-    def get_assessment_detail(self):
+    def get_assessment_detail(self, assessmentName):
         locators = {
             'testSheet': [By.XPATH, '//*[@id="region-main"]/div/table/tbody/tr/td[1]'], 
             'testSheet2': [By.XPATH, '//*[@id="region-main"]/div/table/tbody/tr[1]/td[2]'],
@@ -117,7 +110,9 @@ class MoodleScraper():
                 detailList = '作業狀態 : 無法讀取\n\n'
                 print('detailList = ', detailList)
             else:
-                if '已經完成' in status or '已繳交' in status: detailList = '作業狀態 : 已繳交✅\n\n'
+                if '已經完成' in status or '已繳交' in status: 
+                    detailList = '作業狀態 : 已繳交✅\n\n'
+                    assessmentName = '✅' + assessmentName
                 elif '測驗還不能使用' in status: detailList = '作業狀態 : 尚未開放測驗\n\n'
                 else: detailList = '作業狀態 : 未繳交❌\n\n'
                 print('detailList = ', detailList)
@@ -127,7 +122,7 @@ class MoodleScraper():
             detail = self.driver.find_elements(By.XPATH, '//*[@id="region-main"]/div/div[1]//p')
             for m in range(len(detail)):
                 detailList += detail[m].text + '\n'
-            return detailList
+            return assessmentName, detailList
         except NoSuchElementException:
             print('NoSuchElementException: Assessment detail not found')
             return ''
@@ -158,8 +153,8 @@ class MoodleScraper():
                 dateJoin += dateSplited[j+1][:k]
         #data['assessmentDueDate'][i] = dateJoin
         return dateJoin
-    
-    
+
+
     def split_time(self, data):
         #for i in range(len(data['assessmentDueDate'])):
         return data.rsplit(' ', 1)[1]

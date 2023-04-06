@@ -1,42 +1,11 @@
-from moodle_scraper.moodle import *
-from google_calendar.g_calendar import *
-from datetime import datetime
-from datetime import date
+from merge_data import MergeData
 
-def __main__():
-    moodle = Moodle(moodle_creds_file='moodle_scraper/moodle_creds.json')
-    moodle_data = moodle.get_data()
-    moodle_data = moodle.data_process(moodle_data)
-
-    creds = get_credentials()
-    calendar_id = get_calendar_id(creds)
-    HW_names, HW_descriptions, event_id = get_exsisting_HW(creds, calendar_id)
-
-    today = date.today()
-    for i in range(len(moodle_data['assessmentName'])):
-        #checking if the HW is due today or later
-        check_date_str = moodle_data['assessmentDueDate'][i]
-        if check_date_str == None:
-            print(moodle_data['assessmentName'][i] + ' has no due date')
-            continue
-        check_date = datetime.strptime(check_date_str, '%Y-%m-%d').date()       #make it function
-        if check_date >= today or check_date <= today:
-
-            #checking if the HW is already in the calendar
-            if moodle_data['assessmentName'][i] not in HW_names:
-                create_HW(creds, moodle_data['assessmentName'][i], moodle_data['assessmentDueDate'][i], moodle_data['assessmentUrl'][i], calendar_id, moodle_data['assessmentDetail'][i])
-                continue
-
-            #checking if the HW status is the smae as the one in the calendar
-            if moodle_data['assessmentDetail'][i] not in  HW_descriptions:
-
-                # finding the event id
-                for j in range(len(HW_names)):
-                    if moodle_data['assessmentName'][i] == HW_names[j]:
-                        event = event_id[j]
-                        break
-                update_HW(creds, calendar_id, event, moodle_data['assessmentDetail'][i])
+def main():
+    merge_data = MergeData(moodle_creds_file='moodle_scraper/creds/moodle_creds.json')
+    merge_data.getGoogleInfo()
+    merge_data.packData()
+    merge_data.processingHW()
 
 
 if __name__ == '__main__':
-    __main__()
+    main()

@@ -37,14 +37,15 @@ class Moodle():
                         self.moodle.driver.back()
                     print('assessmentName is empty and QUIT')
                     continue
+                assessmentName = course_name + ' | ' + assessmentName
                 assessmentDeadline = self.scraper.get_assessment_deadline()
                 print('assessmentDeadline: ', assessmentDeadline)
-                assesmentDetail = self.scraper.get_assessment_detail()
+                assessmentName, assesmentDetail = self.scraper.get_assessment_detail(assessmentName)
                 print('assesmentDetail: ', assesmentDetail)
                 assesmentUrl = self.scraper.get_url()
                 print('assesmentUrl: ', assesmentUrl)
                 #storing data
-                data['assessmentName'].append(course_name + ' | ' + assessmentName)
+                data['assessmentName'].append(assessmentName)
                 data['assessmentDueDate'].append(assessmentDeadline)
                 data['assessmentDueTime'].append('')
                 data['assessmentDetail'].append(assesmentDetail)

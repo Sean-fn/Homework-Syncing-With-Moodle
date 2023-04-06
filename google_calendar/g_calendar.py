@@ -13,12 +13,13 @@ class GCalendar:
     def __init__(self):
         # If modifying these scopes, delete the file token.json.
         self.SCOPES = ['https://www.googleapis.com/auth/calendar']
+
         self.creds = self.get_credentials()
         self.service = build('calendar', 'v3', credentials=self.creds)
-        # self.token_file = 'google_calendar/g_calendar_token.json'
+        # self.token_file = 'google_calendar/creds/g_calendar_token.json'
         
 
-    def get_credentials(self, token_file = 'google_calendar/g_calendar_token.json'):
+    def get_credentials(self, token_file = 'google_calendar/creds/g_calendar_token.json'):
         creds = None
         if os.path.exists(token_file):
             creds = Credentials.from_authorized_user_file(token_file, self.SCOPES)
@@ -27,10 +28,10 @@ class GCalendar:
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'google_calendar/credentials.json', self.SCOPES)
+                    'google_calendar/creds/credentials.json', self.SCOPES)
                 creds = flow.run_local_server(port=0)
 
-            with open(self.token_file, 'w') as token:
+            with open(token_file, 'w') as token:
                 token.write(creds.to_json())
         return creds
 
@@ -76,12 +77,12 @@ class GCalendar:
             'location': moodle_data['assessmentUrl'][index], 
             'start': {
                 'date': moodle_data['assessmentDueDate'][index],
-                'dateTime': moodle_data['assessmentDueTime'][index],
+                # 'dateTime': moodle_data['assessmentDueTime'][index],
                 'timeZone': 'UTC+8',
             },
             'end': {
                 'date': moodle_data['assessmentDueDate'][index],
-                'dateTime': moodle_data['assessmentDueTime'][index],
+                # 'dateTime': moodle_data['assessmentDueTime'][index],
                 'timeZone': 'UTC+8',
             },
             }
@@ -109,6 +110,7 @@ class GCalendar:
     }
         created_calendar = self.service.calendars().insert(body=calendar).execute()
         print ('the created calendar ID is = ', created_calendar['id'])
+        return created_calendar['id'], True
 
 
     def get_calendar_id(self):
@@ -118,10 +120,11 @@ class GCalendar:
             for i, calendar_list_entry in enumerate(calendar_list['items']):
                 print ('calendar_list_entry = ', calendar_list_entry['summary'])
                 if calendar_list_entry['summary'] == 'HW':
-                    return calendar_list_entry['id']
+                    return calendar_list_entry['id'], False
             page_token = calendar_list.get('nextPageToken')
             if not page_token:
-                self.create_summary()
+                calendarId, newEventList = self.create_summary()
+                return calendarId, newEventList
 
 
     # def get_event_id(creds, calendar_id):
@@ -176,7 +179,7 @@ def main():
     '''
     gCalendar = GCalendar()
     gCalendar.get_credentials()
-    calendar_id = gCalendar.get_calendar_id()
+    calendar_id, newEventList = gCalendar.get_calendar_id()
     # create_HW(creds, '國文小考測驗', '2023-04-01', calendar_id, 'Test')
     items = gCalendar.get_exsisting_HW(calendar_id)                        #can't use one line for loop
 

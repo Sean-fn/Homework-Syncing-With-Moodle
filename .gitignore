@@ -1,7 +1,5 @@
 g_calendar_token.json
 credentials.json
-signup.html
-signup-1.html
 assets/
 test.py
 moodleAcc.json
@@ -11,6 +9,9 @@ data.json
 app2.py
 option.html
 g_task_token.json
+moodle_scraper/creds/
+google_calendar/creds/
+signup.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

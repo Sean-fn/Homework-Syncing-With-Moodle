@@ -10,19 +10,19 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 class GCalendar:
-    def __init__(self):
+    def __init__(self, token_file):
         # If modifying these scopes, delete the file token.json.
         self.SCOPES = ['https://www.googleapis.com/auth/calendar']
 
+        self.token_file = token_file
         self.creds = self.get_credentials()
         self.service = build('calendar', 'v3', credentials=self.creds)
-        # self.token_file = 'google_calendar/creds/g_calendar_token.json'
         
 
-    def get_credentials(self, token_file = 'google_calendar/creds/g_calendar_token.json'):
+    def get_credentials(self):
         creds = None
-        if os.path.exists(token_file):
-            creds = Credentials.from_authorized_user_file(token_file, self.SCOPES)
+        if os.path.exists(self.token_file):
+            creds = Credentials.from_authorized_user_file(self.token_file, self.SCOPES)
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
@@ -31,10 +31,45 @@ class GCalendar:
                     'google_calendar/creds/credentials.json', self.SCOPES)
                 creds = flow.run_local_server(port=0)
 
-            with open(token_file, 'w') as token:
+            with open(self.token_file, 'w') as token:
                 token.write(creds.to_json())
         return creds
 
+    def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=''):
+        try:
+            event = {
+            'summary': moodle_data['assessmentName'][index],
+            'description': moodle_data['assessmentDetail'][index],
+            'location': moodle_data['assessmentUrl'][index], 
+            'start': {
+                'date': moodle_data['assessmentDueDate'][index],
+                # 'dateTime': moodle_data['assessmentDueTime'][index],
+                'timeZone': 'UTC+8',
+            },
+            'end': {
+                'date': moodle_data['assessmentDueDate'][index],
+                # 'dateTime': moodle_data['assessmentDueTime'][index],
+                'timeZone': 'UTC+8',
+            },
+            'reminders': {
+                'useDefault': False,
+                'overrides': [
+                {'method': 'popup', 'minutes': 24 * 60 * 2 + 120},
+                ],
+            },  
+            }
+            if not reminder:
+                event.pop('reminders')
+
+            if event_id:
+                event = self.service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
+                print('Event updated: %s' % (event.get('htmlLink')))
+            else:
+                event = self.service.events().insert(calendarId=calendar_id, body=event).execute()
+                print('Event created: %s' % (event.get('htmlLink')))
+
+        except HttpError as error:
+            print('An error occurred: %s' % error)
 
     def create_HW(self, calendar_id, moodle_data, index, reminder=True):
         try:

@@ -4,9 +4,9 @@ from utils import Utils #checkDate, setReminder, findIndex, sameDescription
 import json
 
 class MergeData:
-    def __init__(self, moodle_creds_file):
+    def __init__(self, moodle_creds_file, google_token_file):
         self.moodle = Moodle(moodle_creds_file)
-        self.gCalendar = GCalendar()
+        self.gCalendar = GCalendar(google_token_file)
         self.utils = Utils()
         self.calendar_id = ''
         self.creds = None

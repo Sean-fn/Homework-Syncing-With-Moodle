@@ -11,6 +11,9 @@ class MoodleScraper():
         course_name = course_titles[index].text.split('[')[0][6:]
         return course_name
 
+    '''
+    TODO: auto switch semesters
+    '''
     def navigate_to_course(self, index):
         course_titles = self.driver.find_elements(By.TAG_NAME, 'h3')        #course title in the dashboard
         if course_titles[index].text[:6] == '111(下)':
@@ -42,21 +45,6 @@ class MoodleScraper():
         #if no type tag, click the link
         assessment_links[index].click()
         return True
-
-
-    def navigate_to_assessment2(self, index, not_assessment_type = ['檔案',  '討論區', 'SCORM教材包']):
-        assessment_links = self.driver.find_elements(By.CLASS_NAME, "instancename")
-        hw_type = assessment_links[index].find_elements(By.CLASS_NAME, "accesshide ")
-        if len(hw_type) == 0:
-            assessment_links[index].click()
-
-        for type in hw_type:#no for loop
-            print('tag = ', type.get_attribute('innerHTML'))
-            if type.get_attribute('innerHTML') in not_assessment_type:
-                assessment_links[index].click()
-                return True
-        assessment_links[index].click()
-        return False
 
 
     def get_url(self):
@@ -99,11 +87,13 @@ class MoodleScraper():
 
     def get_assessment_detail(self, assessmentName):
         locators = {
+            'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
+            'assesment2': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[2]/td[2]'],
             'testSheet': [By.XPATH, '//*[@id="region-main"]/div/table/tbody/tr/td[1]'], 
             'testSheet2': [By.XPATH, '//*[@id="region-main"]/div/table/tbody/tr[1]/td[2]'],
             'testSheet3': [By.XPATH, '//*[@id="region-main"]/div/div[2]/p'],
-            'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
-            'assesment2': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[2]/td[2]'],
+            'testSheet_oneUpTime': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]'],
+            'testSheet_oneUpTime2': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]/span'],
         }
         for locator in locators.values():
             try:
@@ -113,7 +103,7 @@ class MoodleScraper():
                 detailList = '作業狀態 : 無法讀取\n\n'
                 print('detailList = ', detailList)
             else:
-                if '已經完成' in status or '已繳交' in status: 
+                if '已經完成' in status or '已繳交' in status or '已經提交' in status: 
                     detailList = '作業狀態 : 已繳交✅\n\n'
                     assessmentName = '✅' + assessmentName
                 elif '測驗還不能使用' in status: detailList = '作業狀態 : 尚未開放測驗\n\n'
@@ -135,29 +125,28 @@ class MoodleScraper():
         print('processing date: ', data)
         date = data.split('(')[0]
         print('date = ', date)
-        date = '2' + str(date.split('2', 1)[1])
+        date = '202' + str(date.split('202', 1)[1])
         date = date.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', '')
         return date
+    
+    # def split_date2(self, data):
+    #     print('processing date: ', data)
+    #     if '(' not in date:
+    #         return ''
+    #     date = data.split('(')[0]
+    #     date = date.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', '')
+    #     result = ''
+    #     for i in date:
+    #         if i.isdigit() or i == '-':
+    #             result += i
+    #     print('result = ', result)
+    #     return result
 
-
-    def split_date2(self, data):
-        # for i in range(len(data['assessmentDueDate'])):
-        date = data.split('(')[0]
-        print('date = ', date)
-        date = '2' + str(date.split('2', 1)[1])
-        dateSplited = date.split(' ')
-        print('datasplited = ', dateSplited)
-        dateJoin = ''
-        for j, k in enumerate(range(4, 1, -2)):
-            print(j, k)
-            dateJoin += dateSplited[j][:k] + '-'
-            print(dateJoin)
-            if j == 1:
-                dateJoin += dateSplited[j+1][:k]
-        #data['assessmentDueDate'][i] = dateJoin
-        return dateJoin
-
-
+    #TODO: return end time and start time
     def split_time(self, data):
-        #for i in range(len(data['assessmentDueDate'])):
-        return data.rsplit(' ', 1)[1]
+        data = data.rsplit(' ', 1)[1]
+        time = ''
+        for t in data:
+            if t.isdigit() or t == ":":
+                time += t
+        return time

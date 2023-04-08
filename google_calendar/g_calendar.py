@@ -15,8 +15,8 @@ class GCalendar:
         self.SCOPES = ['https://www.googleapis.com/auth/calendar']
 
         self.token_file = token_file
-        self.creds = self.get_credentials()
-        self.service = build('calendar', 'v3', credentials=self.creds)
+        creds = self.get_credentials()
+        self.service = build('calendar', 'v3', credentials=creds)
         
 
     def get_credentials(self):
@@ -35,6 +35,7 @@ class GCalendar:
                 token.write(creds.to_json())
         return creds
 
+    #TODO
     def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=''):
         try:
             event = {
@@ -178,7 +179,9 @@ class GCalendar:
 
     def get_exsisting_HW(self, calendar_id):
         try:
-
+            '''
+            TODO: the timeMin should be the start of the semester
+            '''
             now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
             curr_semester = datetime.datetime(2022, 2, 14).isoformat() + 'Z'
             print('Getting the upcoming 100 events')
@@ -212,11 +215,11 @@ def main():
     '''
     for testing
     '''
-    gCalendar = GCalendar()
+    gCalendar = GCalendar('google_calendar/creds/g_calendar_token.json')
     gCalendar.get_credentials()
     calendar_id, newEventList = gCalendar.get_calendar_id()
-    # create_HW(creds, '國文小考測驗', '2023-04-01', calendar_id, 'Test')
     items = gCalendar.get_exsisting_HW(calendar_id)                        #can't use one line for loop
+    # gCalendar.create_HW(calendar_id, moodle_data, 0, True)
 
 
 if __name__ == '__main__':

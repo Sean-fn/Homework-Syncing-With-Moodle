@@ -1,5 +1,7 @@
-from moodle_scraper.config import *
-from moodle_scraper.scraper import *
+from moodle_scraper.config import MoodleInit
+from moodle_scraper.scraper import MoodleScraper
+from selenium.webdriver.common.by import By
+import json
 
 class Moodle():
     def __init__(self, moodle_creds_file):
@@ -63,20 +65,24 @@ class Moodle():
         for i, date in enumerate(data['assessmentDueDate']):
             try:
                 data['assessmentDueDate'][i] = self.scraper.split_date(date)
-                data['assessmentDueTime'][i] = self.scraper.split_time(date)
+                print('date splited: ', data['assessmentDueDate'][i])
             except:
                 print('cannot split date and time: row data = ', date)
-                data['assessmentDueDate'][i] = None
-                data['assessmentDueTime'][i] = None
-
+                data['assessmentDueDate'][i] = ''
+                data['assessmentDueTime'][i] = ''
+            else:
+                data['assessmentDueTime'][i] = self.scraper.split_time(date)
+                print('time splited: ', data['assessmentDueTime'][i])
         return data
 
 
 def __main__():
-    moodle = Moodle(moodle_creds_file='moodle_scraper/moodle_creds.json')
-    data = moodle.get_data()
+    moodle = Moodle(moodle_creds_file='moodle_scraper/creds/moodle_creds.json')
+    # data = moodle.get_data()
+    with open('dataSean.json', 'r') as f:
+        data = json.load(f)
     data = moodle.data_process(data)
-    with open('data.json', 'w') as f:
+    with open('dataSean.json', 'w') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':

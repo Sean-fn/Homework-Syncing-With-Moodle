@@ -16,11 +16,17 @@ class MergeData:
         self.gHW_descriptions = []
 
     def getGoogleInfo(self):
+        '''
+        get google calendar id
+        '''
         self.gCalendar.get_credentials()
         self.calendar_id, self.newEventList = self.gCalendar.get_calendar_id()
 
 
     def packData(self):
+        '''
+        get data from moodle
+        '''
         # with open('data.json', 'r') as f:
         #     moodle_data = json.load(f)
         #     self.moodle_data = moodle_data
@@ -28,11 +34,14 @@ class MergeData:
         moodle_data = self.moodle.data_process(moodle_data)
         self.moodle_data = moodle_data
 
+        '''
+        get data from google calendar
+        '''
         self.gHW_names, self.gHW_descriptions, self.event_id = self.gCalendar.get_exsisting_HW(self.calendar_id)
         self.checkGHWname = [name.replace('✅', '') for name in self.gHW_names]
 
     def processingHW(self):
-        for i in range(15, len(self.moodle_data['assessmentName'])):
+        for i in range(len(self.moodle_data['assessmentName'])):
             if self.moodle_data['assessmentDueDate'][i] == '':
                 continue
             hWname = self.moodle_data['assessmentName'][i]

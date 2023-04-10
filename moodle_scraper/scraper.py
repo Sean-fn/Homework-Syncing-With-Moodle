@@ -32,7 +32,10 @@ class MoodleScraper():
             return False
 
 
-    def navigate_to_assessment(self, index, assessment_type = [' 作業', ' 測驗卷'], not_assessment_type = [' 檔案',  ' 討論區', ' SCORM教材包']):
+    def navigate_to_assessment(self, index):
+        assessment_type = [' 作業', ' 測驗卷']
+        not_assessment_type = [' 檔案',  ' 討論區', ' SCORM教材包']
+        
         assessment_links = self.driver.find_elements(By.CLASS_NAME, "instancename")
         hw_type = assessment_links[index].find_elements(By.CLASS_NAME, "accesshide ")
         for type in hw_type:
@@ -85,6 +88,7 @@ class MoodleScraper():
         return ''
             
 
+    #TODO: using button to determine the status of a test sheet
     def get_assessment_detail(self, assessmentName):
         locators = {
             'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
@@ -95,6 +99,9 @@ class MoodleScraper():
             'testSheet_oneUpTime': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]'],
             'testSheet_oneUpTime2': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]/span'],
         }
+        '''
+        get stsatus
+        '''
         for locator in locators.values():
             try:
                 status = self.driver.find_element(*locator).text
@@ -111,6 +118,9 @@ class MoodleScraper():
                 print('detailList = ', detailList)
                 break
 
+        '''
+        get detail
+        '''
         try:
             detail = self.driver.find_elements(By.XPATH, '//*[@id="region-main"]/div/div[1]//p')
             for m in range(len(detail)):

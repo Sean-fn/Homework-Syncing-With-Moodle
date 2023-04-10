@@ -36,7 +36,7 @@ class GCalendar:
         return creds
 
     #TODO
-    def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=''):
+    def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=None):
         try:
             event = {
             'summary': moodle_data['assessmentName'][index],
@@ -62,15 +62,22 @@ class GCalendar:
             if not reminder:
                 event.pop('reminders')
 
-            if event_id:
-                event = self.service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
-                print('Event updated: %s' % (event.get('htmlLink')))
-            else:
+            if not event_id:
+                '''
+                if event id in empty, create an event
+                '''
                 event = self.service.events().insert(calendarId=calendar_id, body=event).execute()
                 print('Event created: %s' % (event.get('htmlLink')))
+            else:
+                '''
+                if event id, update an event
+                '''
+                event = self.service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
+                print('Event updated: %s' % (event.get('htmlLink')))
 
         except HttpError as error:
             print('An error occurred: %s' % error)
+            
 
     def create_HW(self, calendar_id, moodle_data, index, reminder=True):
         try:

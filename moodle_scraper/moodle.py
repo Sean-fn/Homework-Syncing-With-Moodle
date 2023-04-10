@@ -18,17 +18,22 @@ class Moodle():
             }
 
         for courrse_index in range(15):
+            '''
+            go though all courses
+            '''
             course_name = self.scraper.get_course_name(courrse_index)
             if  not self.scraper.navigate_to_course(courrse_index):
                 print('No course found')
                 continue
             course_url = self.scraper.get_url()
 
-            #course page
+            '''
+            go though all assessments in the course
+            '''
             assessment_links = self.moodle.driver.find_elements(By.CLASS_NAME, "instancename")
             print(len(assessment_links), '個作業')
             for assessment_index in range(len(assessment_links)):
-                if not self.scraper.navigate_to_assessment(assessment_index, assessment_type = [' 作業', ' 測驗卷']):
+                if not self.scraper.navigate_to_assessment(assessment_index):
                     continue
                 #assessment page
                 print('已進入作業')
@@ -46,7 +51,10 @@ class Moodle():
                 print('assesmentDetail: ', assesmentDetail)
                 assesmentUrl = self.scraper.get_url()
                 print('assesmentUrl: ', assesmentUrl)
-                #storing data
+                
+                '''
+                save data
+                '''
                 data['assessmentName'].append(assessmentName)
                 data['assessmentDueDate'].append(assessmentDeadline)
                 data['assessmentDueTime'].append('')
@@ -54,7 +62,9 @@ class Moodle():
                 data['assessmentUrl'].append(assesmentUrl)
                 self.moodle.driver.back()
                 print('上一頁')
+
             self.moodle.driver.back()
+
         self.moodle.logout()
         print(data)
         return data

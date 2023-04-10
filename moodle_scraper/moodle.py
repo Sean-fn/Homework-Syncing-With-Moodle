@@ -31,7 +31,6 @@ class Moodle():
             go though all assessments in the course
             '''
             assessment_links = self.moodle.driver.find_elements(By.CLASS_NAME, "instancename")
-            print(len(assessment_links), '個作業')
             for assessment_index in range(len(assessment_links)):
                 if not self.scraper.navigate_to_assessment(assessment_index):
                     continue

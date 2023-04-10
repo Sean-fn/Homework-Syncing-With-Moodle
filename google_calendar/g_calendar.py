@@ -170,20 +170,6 @@ class GCalendar:
                 return calendarId, newEventList
 
 
-    # def get_event_id(creds, calendar_id):
-    #     service = build('calendar', 'v3', credentials=creds)
-    #     events_result = service.events().list(calendarId=calendar_id, maxResults=2500, singleEvents=True, orderBy='startTime').execute()
-    #     events = events_result.get('items', [])
-    #     for event in events:
-    #         print(event['id'])
-    #         print(event['description'])
-
-
-    def split_descriptions(descriptions):
-        for i in range(len(descriptions)):
-            descriptions[i] = descriptions[i].split('\n', 1)[0]
-
-
     def get_exsisting_HW(self, calendar_id):
         try:
             '''
@@ -200,11 +186,15 @@ class GCalendar:
             if not events:
                 print('No upcoming events found.')
                 return '', '', ''
+            
+            '''
+            store data
+            '''
             summary = []
             descriptions = []
             event_id = []
+
             for event in events:
-                #print(event['summary'])
                 summary.append(event['summary'])
                 descriptions.append(event['description'])
                 event_id.append(event['id'])

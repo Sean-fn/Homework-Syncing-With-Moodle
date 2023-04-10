@@ -51,9 +51,9 @@ class MergeData:
 
             if checkHWname not in self.checkGHWname:
                 try:
-                    self.gCalendar.create_HW(self.calendar_id, self.moodle_data, i, reminder)
+                    self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder)
                 except Exception as e:
-                    print(hWname + ' has a error : ', e)
+                    print(hWname + ' has an error : ', e)
                 finally:
                     continue
 
@@ -63,4 +63,7 @@ class MergeData:
             #TODO: check if the due date is different
             if self.utils.sameDescription(self.moodle_data, self.gHW_descriptions, i):
                 print('executing update_HW')
-                self.gCalendar.update_HW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
+                try:
+                    self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
+                except Exception as e:
+                    print(hWname + ' has an error : ', e)

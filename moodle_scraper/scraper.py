@@ -75,21 +75,23 @@ class MoodleScraper():
         'testSheet2': [By.XPATH, '//*[@id="yui_3_15_0_3_1679715868097_305"]/div[1]/p[3]'],
         }
 
-        for locator in locators.values():
+        for i, locator in enumerate(locators.values()):
             try:
-                print('exicute = ', locator)
+                print('locator no. ', i+1)
                 assessment_deadline = self.driver.find_element(*locator)
                 print('assessment_deadline = ', assessment_deadline.get_attribute('innerHTML'))
                 return assessment_deadline.get_attribute('innerHTML')
             except NoSuchElementException:
-                print('NoSuchElementException: Assessment deadline not found')
-                print('finding next element')
+                print('Not fount, finding next element')
                 continue
         return ''
             
 
     #TODO: using button to determine the status of a test sheet
     def get_assessment_detail(self, assessmentName):
+        '''
+        get stsatus
+        '''
         locators = {
             'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
             'assesment2': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[2]/td[2]'],
@@ -99,16 +101,13 @@ class MoodleScraper():
             'testSheet_oneUpTime': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]'],
             'testSheet_oneUpTime2': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]/span'],
         }
-        '''
-        get stsatus
-        '''
-        for locator in locators.values():
+        for i, locator in enumerate(locators.values()):
+            print('locator no. ', i+1)
             try:
                 status = self.driver.find_element(*locator).text
                 print('status = ', status)
             except:
                 detailList = '作業狀態 : 無法讀取\n\n'
-                print('detailList = ', detailList)
             else:
                 if '已經完成' in status or '已繳交' in status or '已經提交' in status: 
                     detailList = '作業狀態 : 已繳交✅\n\n'

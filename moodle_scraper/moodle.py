@@ -4,8 +4,8 @@ from selenium.webdriver.common.by import By
 import json
 
 class Moodle():
-    def __init__(self, moodle_creds_file):
-        self.moodle = MoodleInit(moodle_creds_file)      #login to moodle
+    def __init__(self, moodle_creds_file, userId, pwd):
+        self.moodle = MoodleInit(moodle_creds_file, userId, pwd)      #login to moodle
         self.scraper = MoodleScraper(self.moodle.driver)     #scrape data from moodle
 
     def get_data(self):

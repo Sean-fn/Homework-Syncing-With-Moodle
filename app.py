@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for
+from flask import Flask, request, redirect, url_for, Response
 from main import main
 from apscheduler.schedulers.background import BackgroundScheduler
 
@@ -11,7 +11,8 @@ def login():
         user_password = request.form['password']
         try:
             main(user_id, user_password)
-            return redirect(url_for('index', id=user_id))
+            return redirect(url_for('index'))
+            # return redirect(url_for('welcome', id=user_id))
         except:
             return '註冊失敗'
         # return f'You entered ID: {user_id} and Password: {user_password}'
@@ -20,14 +21,14 @@ def login():
     
 
 
-#@app.route('/index', methods=['POST'])
-@app.route('/welcome/<id>', methods=['GET', 'POST'])
-def index(id):
+@app.route('/index', methods=['GET', 'POST'])
+# @app.route('/welcome/<id>', methods=['GET', 'POST'])
+def index():
     # if request.method == 'POST':
     #     google = request.form['id']
     #     return redirect(url_for('index', id=google))
     if request.method == 'GET':
-        return f'<h1>{id}已登記成功!</h1>'
+        return f'<h1>已登記成功!</h1>'
         with open('signup-1.html', 'r') as f:
             return f.read()
         

@@ -43,6 +43,7 @@ class MergeData:
     def processingHW(self):
         for i in range(len(self.moodle_data['assessmentName'])):
             if self.moodle_data['assessmentDueDate'][i] == '':
+                print(self.moodle_data['assessmentDueDate'][i], 'has no due date')
                 continue
             hWname = self.moodle_data['assessmentName'][i]
             checkHWname = self.moodle_data['assessmentName'][i].replace('✅', '')

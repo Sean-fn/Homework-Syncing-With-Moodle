@@ -1,5 +1,5 @@
 from flask import Flask, request, redirect, url_for
-from main import __main__
+from main import main
 from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
@@ -10,7 +10,7 @@ def login():
         user_id = request.form['id']
         user_password = request.form['password']
         try:
-            __main__(user_id, user_password)
+            main(user_id, user_password)
             return redirect(url_for('index', id=user_id))
         except:
             return '註冊失敗'
@@ -37,7 +37,7 @@ def update_HW():
     if request.method == 'GET':
         try:
             for i, j in range(1, 10):
-                __main__(i, j)
+                main(i, j)
         except:
             return '更新失敗'
 

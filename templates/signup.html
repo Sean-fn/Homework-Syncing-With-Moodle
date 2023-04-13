@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Sign up</title>
+    <title>Login Status{{the_status}}</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800&amp;display=swap">
 </head>
@@ -25,7 +25,7 @@
             <div class="row mb-4 mb-lg-5">
                 <div class="col-md-8 col-xl-6 text-center mx-auto">
                     <p class="fw-bold text-success mb-2">Sign up</p>
-                    <h2 class="fw-bold">Welcome</h2>
+                    <h2 class="fw-bold">Login Status</h2>
                 </div>
             </div>
             <div class="row d-flex justify-content-center">
@@ -38,8 +38,14 @@
                             <form method="post">
                                 <div class="mb-3"><input class="form-control" type="text" name="id" placeholder="Email"></div>
                                 <div class="mb-3"><input class="form-control" type="password" name="password" placeholder="Password"></div>
-                                <div class="mb-3"><button class="btn btn-primary shadow d-block w-100" type="submit" herf="index.html">Sign up</button></div>
-                                <p class="text-muted">Already have an account?&nbsp;<a href="login.html">Log in</a></p>
+                                <!-- <div class="form-check mb-3">
+                                    <input class="form-check-input" type="checkbox" value="" id="remember-me">
+                                    <label class="form-check-label" for="remember-me">
+                                        Remember me
+                                    </label>
+                                </div> -->
+                                <div class="mb-3"><button class="btn btn-primary shadow d-block w-100" type="submit" herf="index.html">Login</button></div>
+                                <p class="text-muted">Already have an account?&nbsp;<a href="login">Log in</a></p>
                             </form>
                         </div>
                     </div>
@@ -101,6 +107,9 @@
     </footer>
     <script src="assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="assets/js/bold-and-bright.js"></script>
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script> -->
+
 </body>
 
 </html>

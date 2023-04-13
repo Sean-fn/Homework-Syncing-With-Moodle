@@ -11,6 +11,7 @@ option.html
 g_task_token.json
 moodle_scraper/creds/
 google_calendar/creds/
+templates/loading.html
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

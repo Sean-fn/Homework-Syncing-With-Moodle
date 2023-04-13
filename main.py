@@ -10,5 +10,6 @@ def main(userId, pwd):
     merge_data.processingHW()
 
 
+#TODO: change creds to env
 if __name__ == '__main__':
     main('111', '222')

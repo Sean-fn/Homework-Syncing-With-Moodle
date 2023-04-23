@@ -23,33 +23,37 @@ class Moodle():
             '''
             course_name = self.scraper.get_course_name(courrse_index)
             if  not self.scraper.navigate_to_course(courrse_index):
-                print('No course found')
+                # print('No course found')
                 continue
             course_url = self.scraper.get_url()
 
             '''
-            go though all assessments in the course
+            go though all assessments in a course
             '''
-            assessment_links = self.moodle.driver.find_elements(By.CLASS_NAME, "instancename")
+            aa = self.moodle.driver.find_elements(By.CLASS_NAME, "activityinstance")
+            assessment_links = []
+            for a in aa:
+                assessment_links.append(a.find_element(By.TAG_NAME, "a"))
+
             for assessment_index in range(len(assessment_links)):
                 if not self.scraper.navigate_to_assessment(assessment_index):
                     continue
                 #assessment page
-                print('已進入作業')
+                # print('已進入作業')
                 assessmentName = self.scraper.get_assessment_name()
-                print('assessmentName: ', assessmentName)
+                # print('assessmentName: ', assessmentName)
                 if assessmentName in ['公佈欄', '']:
                     if course_url != self.scraper.get_url():
                         self.moodle.driver.back()
-                    print('assessmentName is empty and QUIT')
+                    # print('assessmentName is empty and QUIT')
                     continue
                 assessmentName = course_name + ' | ' + assessmentName
                 assessmentDeadline = self.scraper.get_assessment_deadline()
-                print('assessmentDeadline: ', assessmentDeadline)
+                # print('assessmentDeadline: ', assessmentDeadline)
                 assessmentName, assesmentDetail = self.scraper.get_assessment_detail(assessmentName)
-                print('assesmentDetail: ', assesmentDetail)
+                # print('assesmentDetail: ', assesmentDetail)
                 assesmentUrl = self.scraper.get_url()
-                print('assesmentUrl: ', assesmentUrl)
+                # print('assesmentUrl: ', assesmentUrl)
                 
                 '''
                 save data
@@ -60,12 +64,12 @@ class Moodle():
                 data['assessmentDetail'].append(assesmentDetail)
                 data['assessmentUrl'].append(assesmentUrl)
                 self.moodle.driver.back()
-                print('上一頁')
+                # print('上一頁')
 
             self.moodle.driver.back()
 
         self.moodle.logout()
-        print(data)
+        # print(data)
         return data
 
 
@@ -74,14 +78,14 @@ class Moodle():
         for i, date in enumerate(data['assessmentDueDate']):
             try:
                 data['assessmentDueDate'][i] = self.scraper.split_date(date)
-                print('date splited: ', data['assessmentDueDate'][i])
+                # print('date splited: ', data['assessmentDueDate'][i])
             except:
-                print('cannot split date and time: row data = ', date)
+                # print('cannot split date and time: row data = ', date)
                 data['assessmentDueDate'][i] = ''
                 data['assessmentDueTime'][i] = ''
             else:
                 data['assessmentDueTime'][i] = self.scraper.split_time(date)
-                print('time splited: ', data['assessmentDueTime'][i])
+                # print('time splited: ', data['assessmentDueTime'][i])
         return data
 
 

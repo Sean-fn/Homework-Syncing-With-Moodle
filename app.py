@@ -10,7 +10,6 @@ app = Flask(__name__, template_folder='./frontend/templates',static_folder='./fr
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -18,15 +17,11 @@ def login():
         session['user_id'] = user_id
         user_password = request.form['password']
         session['user_password'] = user_password
-        # agree = request.form.get('remember-me')
-        # if agree:
-        #     return 'ok'
         try:
             return redirect(url_for('index'))
         except:
             return 'ERROR'
     return render_template('signup.html')
-    
 
 
 @app.route('/index', methods=['GET', 'POST'])
@@ -40,14 +35,14 @@ def index():
         except:
             return redirect(url_for('login'))
 
-@app.route('/update_HW', methods=['GET', 'POST'])
-def update_HW():
-    if request.method == 'GET':
-        try:
-            for i, j in range(1, 10):
-                main(i, j)
-        except:
-            return '更新失敗'
+# @app.route('/update_HW', methods=['GET', 'POST'])
+# def update_HW():
+#     if request.method == 'GET':
+#         try:
+#             for i, j in range(1, 10):
+#                 main(i, j)
+#         except:
+#             return '更新失敗'
 
 if __name__ == '__main__':
     # scheduler = BackgroundScheduler()

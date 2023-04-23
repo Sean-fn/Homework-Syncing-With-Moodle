@@ -4,9 +4,9 @@ from utils import Utils #checkDate, setReminder, findIndex, sameDescription
 import json
 
 class MergeData:
-    def __init__(self, moodle_creds_file, google_token_file):
+    def __init__(self, google_token_file, userId, pwd):
         self.gCalendar = GCalendar(google_token_file)
-        self.moodle = Moodle(moodle_creds_file)
+        self.moodle = Moodle(userId, pwd)
         self.utils = Utils()
         self.calendar_id = ''
         self.creds = None
@@ -16,11 +16,17 @@ class MergeData:
         self.gHW_descriptions = []
 
     def getGoogleInfo(self):
+        '''
+        get google calendar id
+        '''
         self.gCalendar.get_credentials()
         self.calendar_id, self.newEventList = self.gCalendar.get_calendar_id()
 
 
     def packData(self):
+        '''
+        get data from moodle
+        '''
         # with open('data.json', 'r') as f:
         #     moodle_data = json.load(f)
         #     self.moodle_data = moodle_data
@@ -28,12 +34,16 @@ class MergeData:
         moodle_data = self.moodle.data_process(moodle_data)
         self.moodle_data = moodle_data
 
+        '''
+        get data from google calendar
+        '''
         self.gHW_names, self.gHW_descriptions, self.event_id = self.gCalendar.get_exsisting_HW(self.calendar_id)
         self.checkGHWname = [name.replace('✅', '') for name in self.gHW_names]
 
     def processingHW(self):
-        for i in range(15, len(self.moodle_data['assessmentName'])):
+        for i in range(len(self.moodle_data['assessmentName'])):
             if self.moodle_data['assessmentDueDate'][i] == '':
+                print(self.moodle_data['assessmentDueDate'][i], 'has no due date')
                 continue
             hWname = self.moodle_data['assessmentName'][i]
             checkHWname = self.moodle_data['assessmentName'][i].replace('✅', '')
@@ -42,9 +52,9 @@ class MergeData:
 
             if checkHWname not in self.checkGHWname:
                 try:
-                    self.gCalendar.create_HW(self.calendar_id, self.moodle_data, i, reminder)
+                    self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder)
                 except Exception as e:
-                    print(hWname + ' has a error : ', e)
+                    print(hWname + ' has an error : ', e)
                 finally:
                     continue
 
@@ -54,4 +64,7 @@ class MergeData:
             #TODO: check if the due date is different
             if self.utils.sameDescription(self.moodle_data, self.gHW_descriptions, i):
                 print('executing update_HW')
-                self.gCalendar.update_HW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
+                try:
+                    self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
+                except Exception as e:
+                    print(hWname + ' has an error : ', e)

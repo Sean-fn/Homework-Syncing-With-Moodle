@@ -1,16 +1,4 @@
-g_calendar_token.json
-credentials.json
-signup.html
-assets/
-test.py
-moodleAcc.json
 archive/
-moodle_creds.json
-data.json
-app2.py
-option.html
-g_task_token.json
-moodle_scraper/creds/
 google_calendar/creds/
 
 # Byte-compiled / optimized / DLL files

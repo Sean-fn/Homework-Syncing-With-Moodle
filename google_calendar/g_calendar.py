@@ -36,7 +36,7 @@ class GCalendar:
         return creds
 
     #TODO
-    def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=''):
+    def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=None):
         try:
             event = {
             'summary': moodle_data['assessmentName'][index],
@@ -62,15 +62,22 @@ class GCalendar:
             if not reminder:
                 event.pop('reminders')
 
-            if event_id:
-                event = self.service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
-                print('Event updated: %s' % (event.get('htmlLink')))
-            else:
+            if not event_id:
+                '''
+                if event id in empty, create an event
+                '''
                 event = self.service.events().insert(calendarId=calendar_id, body=event).execute()
                 print('Event created: %s' % (event.get('htmlLink')))
+            else:
+                '''
+                if event id, update an event
+                '''
+                event = self.service.events().update(calendarId=calendar_id, eventId=event_id, body=event).execute()
+                print('Event updated: %s' % (event.get('htmlLink')))
 
         except HttpError as error:
             print('An error occurred: %s' % error)
+            
 
     def create_HW(self, calendar_id, moodle_data, index, reminder=True):
         try:
@@ -163,20 +170,6 @@ class GCalendar:
                 return calendarId, newEventList
 
 
-    # def get_event_id(creds, calendar_id):
-    #     service = build('calendar', 'v3', credentials=creds)
-    #     events_result = service.events().list(calendarId=calendar_id, maxResults=2500, singleEvents=True, orderBy='startTime').execute()
-    #     events = events_result.get('items', [])
-    #     for event in events:
-    #         print(event['id'])
-    #         print(event['description'])
-
-
-    def split_descriptions(descriptions):
-        for i in range(len(descriptions)):
-            descriptions[i] = descriptions[i].split('\n', 1)[0]
-
-
     def get_exsisting_HW(self, calendar_id):
         try:
             '''
@@ -193,11 +186,15 @@ class GCalendar:
             if not events:
                 print('No upcoming events found.')
                 return '', '', ''
+            
+            '''
+            store data
+            '''
             summary = []
             descriptions = []
             event_id = []
+
             for event in events:
-                #print(event['summary'])
                 summary.append(event['summary'])
                 descriptions.append(event['description'])
                 event_id.append(event['id'])

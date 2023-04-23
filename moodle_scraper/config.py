@@ -5,8 +5,8 @@ import json
 
 
 class MoodleInit():
-    def __init__(self, moodle_creds_file):
-        self.moodle_creds = self.lood_moodle_creds(moodle_creds_file)
+    def __init__(self, userId, pwd):
+        self.moodle_creds = {'ID': userId, 'password': pwd}         #default value
         self.driver = self._init_driver()
         self.login()
 
@@ -14,7 +14,6 @@ class MoodleInit():
     def lood_moodle_creds(self, file):
         with open(file, 'r') as f:
             return json.load(f)
-    
 
     def _init_driver(self):
         return webdriver.Chrome()

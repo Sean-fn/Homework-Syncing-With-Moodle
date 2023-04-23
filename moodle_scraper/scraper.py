@@ -31,7 +31,10 @@ class MoodleScraper():
             return False
 
 
-    def navigate_to_assessment(self, index, assessment_type = [' 作業', ' 測驗卷'], not_assessment_type = [' 檔案',  ' 討論區', ' SCORM教材包']):
+    def navigate_to_assessment(self, index):
+        assessment_type = [' 作業', ' 測驗卷']
+        not_assessment_type = [' 檔案',  ' 討論區', ' SCORM教材包']
+        
         assessment_links = self.driver.find_elements(By.CLASS_NAME, "instancename")
         hw_type = assessment_links[index].find_elements(By.CLASS_NAME, "accesshide ")
         for type in hw_type:
@@ -66,24 +69,33 @@ class MoodleScraper():
         'first': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[4]/td[2]'],
         'sec': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[4]/td[2]'],
         'third': [By.XPATH, '//*[@id="yui_3_15_0_3_1679661660567_303"]'],
-        'testSheet': [By.XPATH, '//*[@id="region-main"]/div/div[1]/p[2]'],
+        'testSheet': [By.XPATH, '//*[@id="yui_3_15_0_3_1681126092687_303"]'],
+        'testSheet1': [By.XPATH, '//*[@id="region-main"]/div/div[1]/p[2]'],
         'testSheet2': [By.XPATH, '//*[@id="yui_3_15_0_3_1679715868097_305"]/div[1]/p[3]'],
         }
 
-        for locator in locators.values():
+        for i, locator in enumerate(locators.values()):
             try:
-                print('exicute = ', locator)
-                assessment_deadline = self.driver.find_element(*locator)
-                print('assessment_deadline = ', assessment_deadline.get_attribute('innerHTML'))
-                return assessment_deadline.get_attribute('innerHTML')
+                print('locator no. ', i+1)
+                assessment_deadline = self.driver.find_element(*locator).get_attribute('innerHTML')
+                print('assessment_deadline = ', assessment_deadline)
+                '''
+                make sure getting the right deadline
+                '''
+                if '年' not in assessment_deadline and '月' not in assessment_deadline and '日' not in assessment_deadline :
+                    continue
+                return assessment_deadline
             except NoSuchElementException:
-                print('NoSuchElementException: Assessment deadline not found')
-                print('finding next element')
+                print('Not fount, go next')
                 continue
         return ''
             
 
+    #TODO: using button to determine the status of a test sheet
     def get_assessment_detail(self, assessmentName):
+        '''
+        get stsatus
+        '''
         locators = {
             'assesment': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[1]/table/tbody/tr[2]/td[2]'],
             'assesment2': [By.XPATH, '//*[@id="region-main"]/div/div[2]/div[2]/table/tbody/tr[2]/td[2]'],
@@ -93,13 +105,13 @@ class MoodleScraper():
             'testSheet_oneUpTime': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]'],
             'testSheet_oneUpTime2': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]/span'],
         }
-        for locator in locators.values():
+        for i, locator in enumerate(locators.values()):
+            print('locator no. ', i+1)
             try:
                 status = self.driver.find_element(*locator).text
                 print('status = ', status)
             except:
                 detailList = '作業狀態 : 無法讀取\n\n'
-                print('detailList = ', detailList)
             else:
                 if '已經完成' in status or '已繳交' in status or '已經提交' in status: 
                     detailList = '作業狀態 : 已繳交✅\n\n'
@@ -109,6 +121,9 @@ class MoodleScraper():
                 print('detailList = ', detailList)
                 break
 
+        '''
+        get detail
+        '''
         try:
             detail = self.driver.find_elements(By.XPATH, '//*[@id="region-main"]/div/div[1]//p')
             for m in range(len(detail)):

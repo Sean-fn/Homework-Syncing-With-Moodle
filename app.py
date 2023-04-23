@@ -6,8 +6,9 @@ import os
 
 load_dotenv()
 
-app = Flask(__name__, static_url_path='/assets')
+app = Flask(__name__, template_folder='./frontend/templates',static_folder='./frontend/static')
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
+
 
 
 @app.route('/login', methods=['GET', 'POST'])

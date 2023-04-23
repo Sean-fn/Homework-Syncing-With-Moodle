@@ -6,7 +6,7 @@ import os
 
 load_dotenv()
 
-app = Flask(__name__, template_folder='./frontend/templates',static_folder='./frontend/assets')
+app = Flask(__name__, template_folder='./frontend/templates',static_folder='./frontend/static')
 app.secret_key = os.getenv('FLASK_SECRET_KEY')
 
 

@@ -4,6 +4,7 @@ import os
 
 load_dotenv()
 
+
 def main(userId, pwd):
     google_token_file = 'google_calendar/creds/g_calendar_token.json'
 
@@ -13,8 +14,5 @@ def main(userId, pwd):
     merge_data.processingHW()
 
 
-#TODO: change creds to env
 if __name__ == '__main__':
-    acc = os.getenv('MOODLE_ACC')
-    pwd = os.getenv('MOODLE_PWD')
-    main(acc, pwd)
+    main('111', '222')

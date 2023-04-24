@@ -9,6 +9,12 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+from dotenv import load_dotenv
+import os
+import json
+
+load_dotenv()
+
 class GCalendar:
     def __init__(self, token_file):
         # If modifying these scopes, delete the file token.json.
@@ -27,8 +33,9 @@ class GCalendar:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
+                config = json.loads(os.environ['GOOGLE_CREDENTIALS'])
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    'google_calendar/creds/credentials.json', self.SCOPES)
+                    config, self.SCOPES)
                 creds = flow.run_local_server(port=0)
 
             with open(self.token_file, 'w') as token:

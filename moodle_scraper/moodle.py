@@ -18,6 +18,7 @@ class Moodle():
             'assessmentUrl': []
             }
 
+        '''go though 15 courses'''
         for courrse_index in tqdm(range(15)):
             '''
             go though all courses

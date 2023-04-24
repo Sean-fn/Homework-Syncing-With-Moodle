@@ -71,7 +71,7 @@ class MergeData:
 
 
     def storeJsonFile(self):
-        with open('data.json', 'w') as f:
+        with open('archive/data.json', 'w') as f:
             json.dump(self.moodle_data, f, indent=4, ensure_ascii=False)
 
 

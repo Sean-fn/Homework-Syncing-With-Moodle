@@ -1,6 +1,8 @@
 from flask import Flask, request, redirect, url_for, session, render_template
+from flask_sqlalchemy import SQLAlchemy 
 from main import main
 from apscheduler.schedulers.background import BackgroundScheduler
+import json
 from dotenv import load_dotenv
 import os
 

@@ -67,3 +67,15 @@ class MergeData:
                     self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
                 except Exception as e:
                     print(hWname + ' has an error : ', e)
+
+
+    def storeJsonFile(self):
+        with open('archive/data.json', 'w') as f:
+            json.dump(self.moodle_data, f, indent=4, ensure_ascii=False)
+
+
+    def run(self):
+        self.getGoogleInfo()
+        self.packData()
+        self.processingHW()
+        self.storeJsonFile()

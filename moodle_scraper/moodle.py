@@ -17,7 +17,8 @@ class Moodle():
             'assessmentUrl': []
             }
 
-        for courrse_index in range(15):
+        '''go though 15 courses'''
+        for courrse_index in tqdm(range(15)):
             '''
             go though all courses
             '''
@@ -65,7 +66,8 @@ class Moodle():
             self.moodle.driver.back()
 
         self.moodle.logout()
-        print(data)
+        with open('archive/data.json', 'w', encoding='Unicode') as f:
+            json.dump(data, f, indent=4)
         return data
 
 

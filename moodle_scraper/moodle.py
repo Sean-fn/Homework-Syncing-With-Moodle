@@ -2,6 +2,7 @@ from moodle_scraper.config import MoodleInit
 from moodle_scraper.scraper import MoodleScraper
 from selenium.webdriver.common.by import By
 import json
+from tqdm import tqdm
 
 class Moodle():
     def __init__(self, userId, pwd):
@@ -17,7 +18,7 @@ class Moodle():
             'assessmentUrl': []
             }
 
-        for courrse_index in range(15):
+        for courrse_index in tqdm(range(15)):
             '''
             go though all courses
             '''
@@ -69,7 +70,8 @@ class Moodle():
             self.moodle.driver.back()
 
         self.moodle.logout()
-        # print(data)
+        with open('archive/data.json', 'w', encoding='Unicode') as f:
+            json.dump(data, f, indent=4)
         return data
 
 

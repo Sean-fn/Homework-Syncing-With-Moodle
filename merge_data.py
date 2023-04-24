@@ -1,7 +1,6 @@
 from moodle_scraper.moodle import Moodle
 from google_calendar.g_calendar import GCalendar #create_HW, update_HW, get_exsisting_HW, get_credentials, get_calendar_id
 from utils import Utils #checkDate, setReminder, findIndex, sameDescription
-import json
 
 class MergeData:
     def __init__(self, google_token_file, userId, pwd):

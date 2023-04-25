@@ -18,12 +18,22 @@ load_dotenv()
 class GCalendar:
     def __init__(self, token_file):
         # If modifying these scopes, delete the file token.json.
-        self.SCOPES = ['https://www.googleapis.com/auth/calendar']
+        self.SCOPES = ['https://www.googleapis.com/auth/calendar'] 
 
         self.token_file = token_file
+        self.token_str = token_file
         creds = self.get_credentials()
         self.service = build('calendar', 'v3', credentials=creds)
+
         
+
+    def get_credentials2(self):
+        if self.token_str:
+            creds = Credentials.from_authorized_user_info(info={**self.token_str})
+        creds.refresh(Request())
+        access_token = creds.token
+        print(type(access_token))
+        print(access_token)
 
     def get_credentials(self):
         creds = None

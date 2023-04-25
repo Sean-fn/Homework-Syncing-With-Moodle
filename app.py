@@ -21,7 +21,7 @@ db.init_app(app)
 class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     student_password = db.Column(db.String(120), nullable=False)
-    # gCredentials = db.Column(db.String(120), unique=True, nullable=False)
+    gCredentials = db.Column(db.String(120), nullable=False)
 
     def storeData(data):
         db.session.add(data)
@@ -39,20 +39,23 @@ def login():
         session['user_id'] = user_id
         user_password = request.form['password']
         session['user_password'] = user_password
+        gCred = GCalendar('').get_credentials()
 
-        if user_id == '' or user_password == '':
-            print(db.session.query(User).all())
-            print(db.select(User).all())
-            return 'ERROR'
+        # if user_id == '' or user_password == '':
+        #     print(db.session.query(User).all())
+        #     print(db.select(User).all())
+        #     return 'ERROR'
         
         '''store user id and password'''
         existing_user = User.query.filter_by(user_id=user_id).first()
         if not existing_user:
-            data = User(user_id=user_id, student_password=user_password)
+            data = User(user_id=user_id, student_password=user_password, gCredentials=gCred)
             User.storeData(data)
 
         '''go to index'''
         try:
+            user = User.query.filter_by(user_id=user_id).first()
+            session['gCred'] = user.gCredentials
             return redirect(url_for('index'))
         except:
             return 'ERROR'
@@ -63,9 +66,12 @@ def login():
 def index():
     user_id = session.get('user_id')
     user_password = session.get('user_password')
+    gCred = session.get('gCred')
+    if gCred == None:
+        gCred = ''
     if request.method == 'GET':
         try:
-            main(user_id, user_password)
+            main(user_id, user_password, gCred)
             print('登記成功')
             return f'<h1>已登記成功!</h1>'
         except Exception as e:

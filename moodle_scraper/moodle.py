@@ -71,8 +71,6 @@ class Moodle():
             self.moodle.driver.back()
 
         self.moodle.logout()
-        with open('archive/data.json', 'w', encoding='Unicode') as f:
-            json.dump(data, f, indent=4)
         return data
 
 

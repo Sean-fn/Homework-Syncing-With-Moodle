@@ -5,10 +5,8 @@ import os
 load_dotenv()
 
 
-def main(userId, pwd):
-    google_token_file = 'google_calendar/creds/g_calendar_token.json'
-
-    merge_data = MergeData(google_token_file, userId, pwd)
+def main(userId, pwd, gCred):
+    merge_data = MergeData(gCred, userId, pwd)
     merge_data.run()
 
 

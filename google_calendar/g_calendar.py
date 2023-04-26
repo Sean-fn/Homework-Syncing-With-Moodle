@@ -16,16 +16,39 @@ import json
 load_dotenv()
 
 class GCalendar:
-    def __init__(self, token_file):
+    def __init__(self, google_token):
         # If modifying these scopes, delete the file token.json.
-        self.SCOPES = ['https://www.googleapis.com/auth/calendar']
+        self.SCOPES = ['https://www.googleapis.com/auth/calendar'] 
 
-        self.token_file = token_file
-        creds = self.get_credentials()
-        self.service = build('calendar', 'v3', credentials=creds)
-        
+        '''toss dic with refresh_token, client_id, client_secret'''
+        self.token_str = google_token
+        #TODO: remove this in init
+        self.creds = self.get_credentials()
+        self.service = build('calendar', 'v3', credentials=self.creds)
+
+    def get_json_credentials(self) -> str:
+        '''convert credentials to string'''
+        return json.loads(self.creds.to_json())
 
     def get_credentials(self):
+        creds = None
+        if self.token_str:
+            creds = Credentials.from_authorized_user_info(info=self.token_str)
+        if not creds or not creds.valid:
+            if creds:
+                creds.refresh(Request())
+                print('refreshed')
+            else:
+                config = json.loads(os.environ['GOOGLE_CREDENTIALS'])
+                flow = InstalledAppFlow.from_client_config(
+                    config, self.SCOPES)
+                creds = flow.run_local_server(port=0)
+                print(creds.to_json())
+                print('issued')
+        print('returning creds')
+        return creds
+
+    def get_credentials_to_file(self):
         creds = None
         if os.path.exists(self.token_file):
             creds = Credentials.from_authorized_user_file(self.token_file, self.SCOPES)
@@ -33,9 +56,8 @@ class GCalendar:
             if creds and creds.expired and creds.refresh_token:
                 creds.refresh(Request())
             else:
-                config = json.loads(os.environ['GOOGLE_CREDENTIALS'])
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    config, self.SCOPES)
+                    'google_calendar/creds/credentials.json', self.SCOPES)
                 creds = flow.run_local_server(port=0)
 
             with open(self.token_file, 'w') as token:
@@ -219,11 +241,14 @@ def main():
     '''
     for testing
     '''
-    gCalendar = GCalendar('google_calendar/creds/g_calendar_token.json')
-    gCalendar.get_credentials()
+    # gCalendar = GCalendar('google_calendar/creds/g_calendar_token.json')
+    from app import User
+    print(User.query.get(1).gCredentials)
+    gCalendar = GCalendar(User.query.get(1).gCredentials)
     calendar_id, newEventList = gCalendar.get_calendar_id()
-    items = gCalendar.get_exsisting_HW(calendar_id)                        #can't use one line for loop
+    # items = gCalendar.get_exsisting_HW(calendar_id)                        #can't use one line for loop
     # gCalendar.create_HW(calendar_id, moodle_data, 0, True)
+
 
 
 if __name__ == '__main__':

@@ -1,0 +1,9 @@
+flask
+flask_sqlalchemy
+gunicorn
+selenium
+google_calendar
+json
+tqdm
+os
+datetime

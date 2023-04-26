@@ -75,6 +75,8 @@ def delete_account():
     if request.method == 'POST':
         user_id = session.get('user_id')
         user = User.query.filter_by(user_id=user_id).first()
+        if user == None:
+            return f'<h1>無此帳號!</h1>'
         deleteData(user)
         return f'<h1>已刪除{user_id}!</h1>'
     return render_template('delete.html')

@@ -17,36 +17,30 @@ class MoodleScraper():
         course_titles = self.driver.find_elements(By.TAG_NAME, 'h3')        #course title in the dashboard
         if course_titles[index].text[:6] == '111(下)':
             course_name = course_titles[index].text.split('[')[0][6:]
-            print('此課程名子：', course_name)
+            # print('此課程名子：', course_name)
             if course_titles[index].text.startswith('111(下)') and course_titles[index].text.split('[')[0][6:] == course_name:
                 courses_button = self.driver.find_elements(By.CLASS_NAME, 'coursequicklink')
                 courses_button[index].click()
-                print('進入', course_name, '課程')
+                # print('進入', course_name, '課程')
                 try:
                     assert '課程' in self.driver.title
                 except AssertionError:
-                    print('AssertionError : 課程')
+                    print('AssertionError : 課程', AssertionError)
                 return True
-            print('非111下的課程')
             return False
 
 
     def navigate_to_assessment(self, index):
-        assessment_type = [' 作業', ' 測驗卷']
-        not_assessment_type = [' 檔案',  ' 討論區', ' SCORM教材包']
-        
-        assessment_links = self.driver.find_elements(By.CLASS_NAME, "instancename")
-        hw_type = assessment_links[index].find_elements(By.CLASS_NAME, "accesshide ")
-        for type in hw_type:
-            print('tag = ', type.get_attribute('innerHTML'))
-            if type.get_attribute('innerHTML') in not_assessment_type:
-                return False
-            elif type.get_attribute('innerHTML') in assessment_type:
-                assessment_links[index].click()
-                return True
-        #if no type tag, click the link
-        assessment_links[index].click()
-        return True
+        aa = self.driver.find_elements(By.CLASS_NAME, "activityinstance")
+        link_elements = []
+        for a in aa:
+            link_elements.append(a.find_element(By.TAG_NAME, "a"))
+
+        url = link_elements[index].get_attribute("href")
+        if 'assign' in url or 'quiz' in url:
+            link_elements[index].click()
+            return True
+        return False
 
 
     def get_url(self):
@@ -76,9 +70,7 @@ class MoodleScraper():
 
         for i, locator in enumerate(locators.values()):
             try:
-                print('locator no. ', i+1)
                 assessment_deadline = self.driver.find_element(*locator).get_attribute('innerHTML')
-                print('assessment_deadline = ', assessment_deadline)
                 '''
                 make sure getting the right deadline
                 '''
@@ -86,7 +78,6 @@ class MoodleScraper():
                     continue
                 return assessment_deadline
             except NoSuchElementException:
-                print('Not fount, go next')
                 continue
         return ''
             
@@ -106,10 +97,8 @@ class MoodleScraper():
             'testSheet_oneUpTime2': [By.XPATH, '//*[@id="yui_3_15_0_3_1680874833431_310"]/span'],
         }
         for i, locator in enumerate(locators.values()):
-            print('locator no. ', i+1)
             try:
                 status = self.driver.find_element(*locator).text
-                print('status = ', status)
             except:
                 detailList = '作業狀態 : 無法讀取\n\n'
             else:
@@ -118,7 +107,6 @@ class MoodleScraper():
                     assessmentName = '✅' + assessmentName
                 elif '測驗還不能使用' in status: detailList = '作業狀態 : 尚未開放測驗\n\n'
                 else: detailList = '作業狀態 : 未繳交❌\n\n'
-                print('detailList = ', detailList)
                 break
 
         '''
@@ -130,14 +118,11 @@ class MoodleScraper():
                 detailList += detail[m].text + '\n'
             return assessmentName, detailList
         except NoSuchElementException:
-            print('NoSuchElementException: Assessment detail not found')
             return ''
 
 
     def split_date(self, data):
-        print('processing date: ', data)
         date = data.split('(')[0]
-        print('date = ', date)
         date = '202' + str(date.split('202', 1)[1])
         date = date.replace('年', '-').replace('月', '-').replace('日', '').replace(' ', '')
         return date

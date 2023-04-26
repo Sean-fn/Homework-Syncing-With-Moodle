@@ -1,11 +1,11 @@
 from moodle_scraper.moodle import Moodle
-from google_calendar.g_calendar import GCalendar #create_HW, update_HW, get_exsisting_HW, get_credentials, get_calendar_id
-from utils import Utils #checkDate, setReminder, findIndex, sameDescription
+from google_calendar.g_calendar import GCalendar
+from utils import Utils
 import json
 
 class MergeData:
-    def __init__(self, google_token_file, userId, pwd):
-        self.gCalendar = GCalendar(google_token_file)
+    def __init__(self, google_token, userId, pwd):
+        self.gCalendar = GCalendar(google_token)
         self.moodle = Moodle(userId, pwd)
         self.utils = Utils()
         self.calendar_id = ''
@@ -68,3 +68,15 @@ class MergeData:
                     self.gCalendar.synkHW(self.calendar_id, self.moodle_data, i, reminder, self.event_id[index])
                 except Exception as e:
                     print(hWname + ' has an error : ', e)
+
+
+    def storeJsonFile(self):
+        with open('archive/data.json', 'w') as f:
+            json.dump(self.moodle_data, f, indent=4, ensure_ascii=False)
+
+
+    def run(self):
+        self.getGoogleInfo()
+        self.packData()
+        self.processingHW()
+        # self.storeJsonFile()

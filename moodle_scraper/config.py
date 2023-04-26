@@ -7,6 +7,7 @@ import json
 class MoodleInit():
     def __init__(self, userId, pwd):
         self.moodle_creds = {'ID': userId, 'password': pwd}         #default value
+
         self.driver = self._init_driver()
         self.login()
 

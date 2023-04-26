@@ -4,8 +4,8 @@ from utils import Utils
 import json
 
 class MergeData:
-    def __init__(self, google_token_file, userId, pwd):
-        self.gCalendar = GCalendar(google_token_file)
+    def __init__(self, google_token, userId, pwd):
+        self.gCalendar = GCalendar(google_token)
         self.moodle = Moodle(userId, pwd)
         self.utils = Utils()
         self.calendar_id = ''
@@ -71,7 +71,7 @@ class MergeData:
 
 
     def storeJsonFile(self):
-        with open('data.json', 'w') as f:
+        with open('archive/data.json', 'w') as f:
             json.dump(self.moodle_data, f, indent=4, ensure_ascii=False)
 
 
@@ -79,4 +79,4 @@ class MergeData:
         self.getGoogleInfo()
         self.packData()
         self.processingHW()
-        self.storeJsonFile()
+        # self.storeJsonFile()

@@ -1,9 +1,9 @@
 from flask import Flask, request, redirect, url_for, session, render_template, flash
 from flask_sqlalchemy import SQLAlchemy 
 from main import main
-from apscheduler.schedulers.background import BackgroundScheduler
+# from apscheduler.schedulers.background import BackgroundScheduler
 import json
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 
 from google_calendar.g_calendar import GCalendar
@@ -13,12 +13,12 @@ from flask_api.common.utiles import initDB, createTables, dropTables, insertData
 
 
 
-load_dotenv()
+# load_dotenv()
 
 app = create_app()
 db.init_app(app)
 
-with app.app_context():
+with app.app_context(): 
     print('create table user')
     createTables()
 

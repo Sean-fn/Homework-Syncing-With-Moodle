@@ -2,8 +2,7 @@ flask
 flask_sqlalchemy
 gunicorn
 selenium
-google_calendar
-json
+
+google-api-python-client
+
 tqdm
-os
-datetime

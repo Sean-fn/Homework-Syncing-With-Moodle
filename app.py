@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, url_for, session, render_template
+from flask import Flask, request, redirect, url_for, session, render_template, flash
 from flask_sqlalchemy import SQLAlchemy 
 from main import main
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -22,10 +22,10 @@ with app.app_context():
     print('create table user')
     createTables()
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
 
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
         '''get user id and password'''
         user_id = request.form['id']
         session['user_id'] = user_id
@@ -49,14 +49,13 @@ def login():
 
         try:
             session['gCred'] = gCredentials
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         except:
             return 'ERROR'
     return render_template('signup.html')
 
-
-@app.route('/index', methods=['GET', 'POST'])
-def index():
+@app.route('/login', methods=['GET','POST'])
+def login():
     '''get session data'''
     user_id = session.get('user_id')
     user_password = session.get('user_password')
@@ -69,6 +68,16 @@ def index():
         except Exception as e:
             print(e)
             return f'<h1>登記失敗!</h1>'
+
+#TODO: pops up error if the account not found
+@app.route('/delete-account', methods=['Get','POST'])
+def delete_account():
+    if request.method == 'POST':
+        user_id = session.get('user_id')
+        user = User.query.filter_by(user_id=user_id).first()
+        deleteData(user)
+        return f'<h1>已刪除{user_id}!</h1>'
+    return render_template('delete.html')
 
 @app.route('/update_HW', methods=['GET', 'POST'])
 def update_HW():

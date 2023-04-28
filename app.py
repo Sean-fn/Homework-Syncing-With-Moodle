@@ -51,7 +51,7 @@ def index():
             return redirect(url_for('login'))
         except:
             return 'ERROR'
-    return 'all good'
+    return render_template('signup.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():

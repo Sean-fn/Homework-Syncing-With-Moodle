@@ -1,4 +1,4 @@
-from moodle_scraper.config import MoodleInit
+from moodle_scraper import MoodleInit
 from moodle_scraper.scraper import MoodleScraper
 from selenium.webdriver.common.by import By
 import json

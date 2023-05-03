@@ -1,12 +1,15 @@
-from moodle_scraper.moodle import Moodle
-from google_calendar.g_calendar import GCalendar
-from utils import Utils
+# from moodle_scraper.moodle import Moodle
+from merge_data.moodle_scraper import getherData
+from merge_data.google_calendar.g_calendar import GCalendar
+from common.utils import Utils
 import json
 
 class MergeData:
     def __init__(self, google_token, userId, pwd):
+        self.userId = userId
+        self.pwd = pwd
         self.gCalendar = GCalendar(google_token)
-        self.moodle = Moodle(userId, pwd)
+        # self.moodle = Moodle(userId, pwd)
         self.utils = Utils()
         self.calendar_id = ''
         self.creds = None
@@ -30,9 +33,9 @@ class MergeData:
         # with open('data.json', 'r') as f:
         #     moodle_data = json.load(f)
         #     self.moodle_data = moodle_data
-        moodle_data = self.moodle.get_data()
-        moodle_data = self.moodle.data_process(moodle_data)
-        self.moodle_data = moodle_data
+        # moodle_data = self.moodle.get_data()
+        # moodle_data = self.moodle.data_process(moodle_data)
+        self.moodle_data = getherData(self.userId, self.pwd)
 
         '''
         get data from google calendar

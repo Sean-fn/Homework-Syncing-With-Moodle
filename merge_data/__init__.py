@@ -9,7 +9,6 @@ class MergeData:
         self.userId = userId
         self.pwd = pwd
         self.gCalendar = GCalendar(google_token)
-        # self.moodle = Moodle(userId, pwd)
         self.utils = Utils()
         self.calendar_id = ''
         self.creds = None
@@ -30,11 +29,6 @@ class MergeData:
         '''
         get data from moodle
         '''
-        # with open('data.json', 'r') as f:
-        #     moodle_data = json.load(f)
-        #     self.moodle_data = moodle_data
-        # moodle_data = self.moodle.get_data()
-        # moodle_data = self.moodle.data_process(moodle_data)
         self.moodle_data = getherData(self.userId, self.pwd)
 
         '''

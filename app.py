@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 from merge_data.google_calendar.g_calendar import GCalendar
-from merge_data.merge_data import MergeData
+from merge_data import MergeData
 from flask_api import create_app, db
 from flask_api.database.models import User
 from flask_api.common.utiles import initDB, createTables, dropTables, insertData, updateData, queryUser, deleteData
@@ -51,7 +51,7 @@ def index():
             return redirect(url_for('login'))
         except:
             return 'ERROR'
-    return 'all good'
+    return render_template('signup.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -96,4 +96,4 @@ if __name__ == '__main__':
     # scheduler.add_job(update_HW, 'cron', hour=22, minute=0)
     # scheduler.start()
     app.debug = True
-    app.run()
+    app.run(port = 8080, host = '0.0.0.0')

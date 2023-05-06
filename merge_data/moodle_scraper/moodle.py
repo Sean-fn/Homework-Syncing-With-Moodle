@@ -23,11 +23,11 @@ class Moodle():
         self.moodle.logout()
         return data
 
+
     def _get_data_recursive(self, data, course_index):
         if course_index >= 15:
             return
 
-        # course_name = self.scraper.get_course_name(course_index)
         course_name = self.scraper.navigate_to_course(course_index)
         if course_name:
             assessments = self.moodle.driver.find_elements(By.CLASS_NAME, "activityinstance")
@@ -40,6 +40,7 @@ class Moodle():
             self.moodle.driver.back()           #for course page
 
         self._get_data_recursive(data, course_index + 1)
+
 
     def _get_assessment_data_recursive(self, data, course_name, assessment_links, assessment_index):
         if assessment_index >= len(assessment_links):

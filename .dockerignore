@@ -1,0 +1,6 @@
+.env
+Procfile
+wsgi.py
+README.md
+requirements.txt
+__pycache__/

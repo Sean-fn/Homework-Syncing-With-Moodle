@@ -95,5 +95,6 @@ if __name__ == '__main__':
     # scheduler = BackgroundScheduler()
     # scheduler.add_job(update_HW, 'cron', hour=22, minute=0)
     # scheduler.start()
-    app.debug = True
-    app.run(port = 8080, host = '0.0.0.0')
+    if os.environ.get('FLASK_ENV') == 'development':
+        app.debug = True
+    app.run(port = 8888, host = '0.0.0.0')

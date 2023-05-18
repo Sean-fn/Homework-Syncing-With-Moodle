@@ -26,3 +26,4 @@ def getGCredentials(user_id, user_password):
     else:
         gCredentials = json.loads(user.gCredentials)
     gCredentials = GCalendar(gCredentials).get_json_credentials()
+    return gCredentials

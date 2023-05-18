@@ -2,9 +2,9 @@ from dotenv import load_dotenv
 import os
 
 from flask_api import create_app
-from flask_api.common.utiles import createTables
+from flask_api.common.utiles import Utiles
 from flask_api.database.models import db
-from routes import Routes
+from main.routes import Routes
 
 load_dotenv()
 
@@ -13,7 +13,7 @@ app.register_blueprint(Routes.main_bp)
 db.init_app(app)
 
 with app.app_context(): 
-    createTables()
+    Utiles.createTables()
     print('TABLE USER CREATED')
 
 if os.environ.get('FLASK_DEBUG') == 'development':

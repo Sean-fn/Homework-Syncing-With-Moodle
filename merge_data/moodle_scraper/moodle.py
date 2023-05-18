@@ -48,7 +48,7 @@ class Moodle():
             return
 
         course_name = self.scraper.navigate_to_course(course_index)
-        print('Get into course_name: {} course_index: {}'.format(course_name, course_index))
+        print('Get into course_name: {} Course_index: {}'.format(course_name, course_index))
         if course_name:
             assessments = self.moodle.driver.find_elements(By.CLASS_NAME, "activityinstance")
             assessment_links = []
@@ -81,7 +81,7 @@ class Moodle():
             return
 
         if self.scraper.navigate_to_assessment(assessment_index):
-            print('Get into detail page. index = ', assessment_index)
+            print('Get into detail page. Assessment index = ', assessment_index)
             assessmentName = self.scraper.get_assessment_name()
             assessmentName = course_name + ' | ' + assessmentName
             print('assessmentName: ', assessmentName)
@@ -100,7 +100,7 @@ class Moodle():
             print('DATA ADDED')
 
             self.moodle.driver.back()       #for assessment page
-            print('Back to assessment list page.  course index{}  assessment index = {}'
+            print('Back to assessment list page.  Aourse index{}  Assessment index = {}'
                   .format(course_name, assessment_index))
 
         self._get_assessment_data_recursive(data, course_name, assessment_links, assessment_index + 1)
@@ -190,12 +190,14 @@ class Moodle():
 
 
 def __main__():
+    '''For testing
+    '''
     moodle = Moodle(moodle_creds_file='moodle_scraper/creds/moodle_creds.json')
     # data = moodle.get_data()
-    with open('dataSean.json', 'r') as f:
+    with open('data.json', 'r') as f:
         data = json.load(f)
     data = moodle.data_process(data)
-    with open('dataSean.json', 'w') as f:
+    with open('data.json', 'w') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 if __name__ == '__main__':

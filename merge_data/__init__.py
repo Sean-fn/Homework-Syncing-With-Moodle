@@ -1,7 +1,7 @@
 # from moodle_scraper.moodle import Moodle
 from merge_data.moodle_scraper import getherData
 from merge_data.google_calendar.g_calendar import GCalendar
-from common.utils import Utils
+from merge_data.common.utiles import Utils
 import json
 
 class MergeData:

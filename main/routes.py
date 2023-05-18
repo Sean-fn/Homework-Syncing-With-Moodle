@@ -3,12 +3,13 @@ import json
 from flask import Blueprint, request, redirect, url_for, session, render_template
 
 from flask_api.database.models import User
-from flask_api.common.utiles import initDB, createTables, dropTables, insertData, updateData, queryUser, deleteData
+from flask_api.common.utiles import Utiles
 from merge_data.google_calendar.g_calendar import GCalendar
 from merge_data import MergeData
 
 
 main_bp = Blueprint('main', __name__)
+utiles = Utiles()
 
 class Routes:
     @staticmethod
@@ -32,7 +33,7 @@ class Routes:
                 gCredentials = ''
                 #TODO: store only refesh token and so on
                 data = User(user_id=user_id, student_password=user_password, gCredentials=str(gCredentials).replace("'", '"'))
-                insertData(data)
+                utiles.insertData(data)
             else:
                 gCredentials = json.loads(user.gCredentials)
             gCredentials = GCalendar(gCredentials).get_json_credentials()
@@ -44,18 +45,27 @@ class Routes:
     @staticmethod
     @main_bp.route('/login', methods=['GET','POST'])
     def login():
-        '''get session data'''
         user_id = session.get('user_id')
         user_password = session.get('user_password')
         gCred = session.get('gCred')
 
         if request.method == 'GET':
             try:
-                merge_data = MergeData(gCred, user_id, user_password)
-                merge_data.run()
-                return f'<h1>已登記成功!</h1><h3>請至<a href="https://calendar.google.com/calendar">google calendar</a>查看</h3>'
+                return handle_successful_login(gCred, user_id, user_password)
             except Exception as e:
-                print('error', e)
-                return f'<h1>登記失敗!</h1><h3>{e}</h3>'
+                print('ERROR', e)
+                return handle_login_failure(e)
+
+def handle_successful_login(gCred, user_id, user_password):
+    merge_data = MergeData(gCred, user_id, user_password)
+    merge_data.run()
+    return f'<h1>已登記成功!</h1><h3>請至<a href="https://calendar.google.com/calendar">google calendar</a>查看</h3>'
+
+def handle_login_failure(error):
+    return f'<h1>登記失敗!</h1><h3>{error}</h3>'
+
+# def get_json_credentials(gCredentials):
+    gCredentials = GCalendar(gCredentials).get_json_credentials()
+    return gCredentials
 
 Routes.main_bp = main_bp

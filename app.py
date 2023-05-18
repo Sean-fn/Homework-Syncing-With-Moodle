@@ -2,8 +2,6 @@ from dotenv import load_dotenv
 import os
 
 from flask_api import create_app
-from flask_api.common.utiles import Utiles
-from flask_api.database.models import db
 from main.routes import Routes
 
 load_dotenv()

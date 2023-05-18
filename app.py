@@ -10,11 +10,6 @@ load_dotenv()
 
 app = create_app()
 app.register_blueprint(Routes.main_bp)
-db.init_app(app)
-
-with app.app_context(): 
-    Utiles.createTables()
-    print('TABLE USER CREATED')
 
 if os.environ.get('FLASK_DEBUG') == 'development':
     app.debug = True

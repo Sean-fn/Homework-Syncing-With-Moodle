@@ -27,7 +27,8 @@ class GCalendar:
         self.service = build('calendar', 'v3', credentials=self.creds)
 
     def get_json_credentials(self) -> str:
-        '''convert credentials to string'''
+        '''convert credentials to string
+        '''
         return json.loads(self.creds.to_json())
 
     def get_credentials(self):

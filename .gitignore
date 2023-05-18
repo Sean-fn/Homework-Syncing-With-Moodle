@@ -1,6 +1,8 @@
 archive/
 .DS_store
 .vscode/
+pytest.py
+unitest.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

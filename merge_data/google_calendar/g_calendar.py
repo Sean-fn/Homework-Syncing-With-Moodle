@@ -27,7 +27,8 @@ class GCalendar:
         self.service = build('calendar', 'v3', credentials=self.creds)
 
     def get_json_credentials(self) -> str:
-        '''convert credentials to string'''
+        '''convert credentials to string
+        '''
         return json.loads(self.creds.to_json())
 
     def get_credentials(self):
@@ -67,6 +68,7 @@ class GCalendar:
     #TODO
     def synkHW(self, calendar_id, moodle_data, index, reminder, event_id=None):
         try:
+            print('synkHW get into try')
             event = {
             'summary': moodle_data['assessmentName'][index],
             'description': moodle_data['assessmentDetail'][index],
@@ -206,9 +208,9 @@ class GCalendar:
             '''
             now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
             curr_semester = datetime.datetime(2022, 2, 14).isoformat() + 'Z'
-            print('Getting the upcoming 100 events')
+            print('Getting the upcoming 1000 events')
             events_result = self.service.events().list(calendarId=calendar_id, timeMin=curr_semester,
-                                                maxResults=100, singleEvents=True,
+                                                maxResults=1000, singleEvents=True,
                                                 orderBy='startTime').execute()
             events = events_result.get('items', [])
 
@@ -223,13 +225,26 @@ class GCalendar:
             descriptions = []
             event_id = []
 
-            for event in events:
+            print('There are %d events in total' % len(events))
+            for i, event in enumerate(events):
+                print('event no.%d' % i)
                 summary.append(event['summary'])
-                descriptions.append(event['description'])
+                print('summary = ', event['summary'])
                 event_id.append(event['id'])
+                print('event_id = ', event['id'])
+
+                #ISSUE: the description is not always there
+                if event['description'] == None:
+                    descriptions.append('No description')
+                else:
+                    descriptions.append(event['description'])
+                print('description = ', event['description'])
+                
                 start = event['start'].get('dateTime', event['start'].get('date'))
                 print(start, event['summary'], '\n', event['description'])
             return summary, descriptions, event_id
+
+
 
         except HttpError as error:
             print('An error occurred: %s' % error)

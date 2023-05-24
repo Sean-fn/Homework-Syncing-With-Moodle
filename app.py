@@ -1,11 +1,11 @@
 from flask import Flask, request, redirect, url_for, session, render_template, flash
-from main import main
 # from apscheduler.schedulers.background import BackgroundScheduler
 import json
 from dotenv import load_dotenv
 import os
 
-from google_calendar.g_calendar import GCalendar
+from merge_data.google_calendar.g_calendar import GCalendar
+from merge_data import MergeData
 from flask_api import create_app, db
 from flask_api.database.models import User
 from flask_api.common.utiles import initDB, createTables, dropTables, insertData, updateData, queryUser, deleteData
@@ -51,7 +51,7 @@ def index():
             return redirect(url_for('login'))
         except:
             return 'ERROR'
-    return 'all good'
+    return render_template('signup.html')
 
 @app.route('/login', methods=['GET','POST'])
 def login():
@@ -62,8 +62,9 @@ def login():
 
     if request.method == 'GET':
         try:
-            main(user_id, user_password, gCred)
-            return f'<h1>已登記成功!</h1>'
+            merge_data = MergeData(gCred, user_id, user_password)
+            merge_data.run()
+            return f'<h1>已登記成功!</h1><h3>請至<a href="https://calendar.google.com/calendar">google calendar</a>查看</h3>'
         except Exception as e:
             print(e)
             return f'<h1>登記失敗!</h1>'
@@ -94,5 +95,6 @@ if __name__ == '__main__':
     # scheduler = BackgroundScheduler()
     # scheduler.add_job(update_HW, 'cron', hour=22, minute=0)
     # scheduler.start()
-    app.debug = True
-    app.run()
+    if os.environ.get('FLASK_ENV') == 'development':
+        app.debug = True
+    app.run(port = 8888, host = '0.0.0.0')

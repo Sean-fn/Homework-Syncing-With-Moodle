@@ -1,5 +1,6 @@
 archive/
-google_calendar/creds/
+.DS_store
+.vscode/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

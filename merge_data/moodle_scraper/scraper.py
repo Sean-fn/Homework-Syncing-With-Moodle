@@ -5,10 +5,6 @@ from selenium.common.exceptions import NoSuchElementException
 class MoodleScraper():
     def __init__(self, driver):
         self.driver = driver
-    def get_course_name(self, index):
-        course_titles = self.driver.find_elements(By.TAG_NAME, 'h3')        #course title in the dashboard
-        course_name = course_titles[index].text.split('[')[0][6:]
-        return course_name
 
     '''
     TODO: auto switch semesters
@@ -26,7 +22,7 @@ class MoodleScraper():
                     assert '課程' in self.driver.title
                 except AssertionError:
                     print('AssertionError : 課程', AssertionError)
-                return True
+                return course_name
             return False
 
 

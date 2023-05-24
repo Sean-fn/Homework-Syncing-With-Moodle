@@ -80,6 +80,7 @@ class MoodleScraper():
     def get_assessment_deadline(self)-> str:
         '''Get the deadline of the assessment: Go though all the possible locators, 
         and return the first valid deadline.
+        Not formated yet
         
         Returns:
             string: If the deadline is valid, return the deadline. Otherwise, return an empty string.
@@ -117,6 +118,7 @@ class MoodleScraper():
 
         Args:
             assessmentName (string): The name of the assessment
+            for adding a check icon.
         
         Returns:
             string: If the detail is valid, return the detail. Otherwise, return an empty string.

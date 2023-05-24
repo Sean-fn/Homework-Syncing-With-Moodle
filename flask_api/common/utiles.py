@@ -23,5 +23,10 @@ class Utiles:
         return User.query.filter_by(user_id=user_id).first()
 
     def deleteData(data):
+        '''delete data from database
+
+        Args:
+            data (object): data from database
+        '''
         db.session.delete(data)
         db.session.commit()

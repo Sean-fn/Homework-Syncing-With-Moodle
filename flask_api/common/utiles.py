@@ -1,5 +1,5 @@
 from flask_api import db
-from flask_api.database.models import User
+from flask_api.database.models import Users
 
 class Utiles:
     def initDB():
@@ -20,7 +20,7 @@ class Utiles:
         db.session.commit()
 
     def queryUser(user_id):
-        return User.query.filter_by(user_id=user_id).first()
+        return Users.query.filter_by(user_id=user_id).first()
 
     def deleteData(data):
         '''delete data from database

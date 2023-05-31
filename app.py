@@ -13,4 +13,4 @@ if os.environ.get('FLASK_DEBUG') == 'development':
     app.debug = True
 
 if __name__ == '__main__':
-    app.run(port=8888, host='0.0.0.0')
+    app.run(port=8080, host='0.0.0.0')

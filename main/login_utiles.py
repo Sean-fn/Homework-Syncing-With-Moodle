@@ -2,8 +2,6 @@ from merge_data import MergeData
 from flask_api.database.models import Users
 from flask_api.common.utiles import Utiles
 
-utiles = Utiles()
-
 def handle_successful_login(gCred, user_id, user_password):
     
     merge_data = MergeData(gCred, user_id, user_password)
@@ -17,5 +15,5 @@ def handle_delete_account(user_id):
     user = Users.query.filter_by(user_id=user_id).first()
     if user == None:
         return f'<h1>無此帳號!</h1>'
-    utiles.deleteData(user)
+    Utiles.deleteData(user)
     return f'<h1>已刪除{user_id}!</h1>'

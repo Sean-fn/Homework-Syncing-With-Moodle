@@ -248,24 +248,3 @@ class GCalendar:
 
         except HttpError as error:
             print('An error occurred: %s' % error)
-
-
-
-
-def main():
-    '''
-    for testing
-    '''
-    # gCalendar = GCalendar('google_calendar/creds/g_calendar_token.json')
-    from app import User
-    print(User.query.get(1).gCredentials)
-    gCalendar = GCalendar(User.query.get(1).gCredentials)
-    calendar_id, newEventList = gCalendar.get_calendar_id()
-    # items = gCalendar.get_exsisting_HW(calendar_id)                        #can't use one line for loop
-    # gCalendar.create_HW(calendar_id, moodle_data, 0, True)
-
-
-
-if __name__ == '__main__':
-    main()
-

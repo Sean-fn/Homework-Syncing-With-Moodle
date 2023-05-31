@@ -3,9 +3,9 @@ import json
 from merge_data.google_calendar.g_calendar import GCalendar
 from flask_api.database.models import Users, MoodleData
 from flask_api.common.utiles import Utiles
-from 
+from flask_api import db
 
-def storeGCredentials(user_id, user_password):
+def storeUserData(user_id, user_password):
     '''if user id and password is empty:
     store user id, password and gCredentials
     if NOT empty:
@@ -18,16 +18,20 @@ def storeGCredentials(user_id, user_password):
     Returns:
 
     '''
-    user = Users.query.filter_by(user_id=user_id).first()
+    user = Utiles.queryUser(user_id)
+
     if user == None:
         gCredentials = ''
-        #TODO: store only refesh token and so on
-        #TODO: break down the code(insertData)
-        data = Users(user_id=user_id, student_password=user_password, gCredentials=str(gCredentials).replace("'", '"'))
-        Utiles().insertData(data)
     else:
+        print('got things, in else')
         gCredentials = json.loads(user.gCredentials)
+        print('fir gCredentials', gCredentials)
     gCredentials = GCalendar(gCredentials).get_json_credentials()
+    
+    '''store user id and password'''
+    if not user:
+        data = Users(user_id=user_id, student_password=user_password, gCredentials=str(gCredentials).replace("'", '"'))
+        Utiles.insertData(data)
     return gCredentials
 
 def storeMoodleData(user_id, data):

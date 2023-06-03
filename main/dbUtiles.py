@@ -5,7 +5,7 @@ from flask_api.database.models import Users, MoodleData
 from flask_api.common.utiles import Utiles
 from flask_api import db
 
-def storeUserData(user_id, user_password):
+def storeUserData(user_id:str, user_password:str) -> str:
     '''if user id and password is empty:
     store user id, password and gCredentials
     if NOT empty:
@@ -16,16 +16,14 @@ def storeUserData(user_id, user_password):
         user_password (string): user password of moodle
 
     Returns:
-
+        String: refreshed google credentials
     '''
     user = Utiles.queryUser(user_id)
 
     if user == None:
         gCredentials = ''
     else:
-        print('got things, in else')
         gCredentials = json.loads(user.gCredentials)
-        print('fir gCredentials', gCredentials)
     gCredentials = GCalendar(gCredentials).get_json_credentials()
     
     '''store user id and password'''
@@ -34,7 +32,7 @@ def storeUserData(user_id, user_password):
         Utiles.insertData(data)
     return gCredentials
 
-def storeMoodleData(user_id, data):
+def storeMoodleData(user_id:str, data:dict) -> None:
     '''store moodle data to database
 
     Args:
@@ -42,11 +40,10 @@ def storeMoodleData(user_id, data):
         moodle_data (dict): extracted moodle data
 
     Returns:
-
+        Bool: If the data stored NOT sucesfully, return False
     '''
     user = Users.query.get(user_id)
     #TODO: Add exception handling
-
     for i in range(len(data['assessmentName'])):
         assessment = MoodleData(
             user_id=user.user_id,
@@ -57,5 +54,4 @@ def storeMoodleData(user_id, data):
             assessment_url=data['assessmentUrl'][i]
         )
         db.session.add(assessment)
-
     db.session.commit()

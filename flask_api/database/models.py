@@ -15,8 +15,8 @@ class MoodleData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.user_id'))
     assessment_name = db.Column(db.String(255))
-    assessment_due_date = db.Column(db.Date)
-    assessment_due_time = db.Column(db.Time)
+    assessment_due_date = db.Column(db.String(255))
+    assessment_due_time = db.Column(db.String(255))
     assessment_detail = db.Column(db.Text)
     assessment_url = db.Column(db.String(255))
 

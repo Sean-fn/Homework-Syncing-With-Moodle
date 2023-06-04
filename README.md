@@ -1,6 +1,3 @@
-<<<<<<< Updated upstream
-# Homework-Syncing-With-Moodle
-=======
 # Homework Syncing With Moodle
 This is a web application that can sync homework from Moodle to **Google Calendar** and **Google Task**. Inculding details and updates of submission status.
 
@@ -104,4 +101,3 @@ my-app/
 │  ├─ login_utils.py
 │  ├─ routes.py
 ```
->>>>>>> Stashed changes

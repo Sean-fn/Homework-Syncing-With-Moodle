@@ -97,7 +97,7 @@ class Moodle():
             data['assessmentDueTime'].append('')
             data['assessmentDetail'].append(assesmentDetail)
             data['assessmentUrl'].append(assesmentUrl)
-            print('DATA ADDED')
+            print('---Data appended into the dictionary---')
 
             self.moodle.driver.back()       #for assessment page
             print('Back to assessment list page.  Aourse index{}  Assessment index = {}'

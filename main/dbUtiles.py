@@ -40,11 +40,18 @@ def storeMoodleData(user_id:str, data:dict) -> None:
         moodle_data (dict): extracted moodle data
 
     Returns:
-        Bool: If the data stored NOT sucesfully, return False
+        Bool: If the data stored unsucesfully, return False
     '''
+    print('-----in storeMoodleData-----')
     user = Users.query.get(user_id)
     #TODO: Add exception handling
     for i in range(len(data['assessmentName'])):
+        print('the current data = ', Utiles.queryMoodleData(user_id, data['assessmentName'][i]))
+        if Utiles.queryMoodleData(user_id, data['assessmentName'][i]) == '<MoodleData '+data['assessmentName'][i]+'>':
+            print('the data is already in the database')
+            continue
+        print('the i = ', i)
+        print(data['assessmentName'][i])
         assessment = MoodleData(
             user_id=user.user_id,
             assessment_name=data['assessmentName'][i],
@@ -55,3 +62,5 @@ def storeMoodleData(user_id:str, data:dict) -> None:
         )
         db.session.add(assessment)
     db.session.commit()
+    print('the length of the moodle data = ', len(user.moodle_data))
+    print('-----out storeMoodleData-----')

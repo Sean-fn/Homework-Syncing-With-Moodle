@@ -15,7 +15,6 @@ def handle_login_failure(error):
 
 def handle_delete_account(user_id):
     user = Utiles.queryUser(user_id)
-    # user = Users.query.filter_by(user_id=user_id).first()
     if user == None:
         return f'<h1>無此帳號!</h1>'
     Utiles.deleteData(user)

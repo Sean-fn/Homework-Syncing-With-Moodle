@@ -5,7 +5,7 @@ class Users(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, unique=True, nullable=False)
     student_password = db.Column(db.String(120), nullable=False)
     gCredentials = db.Column(db.String(120))
-    moodle_data = db.relationship('MoodleData', backref='user')
+    moodle_data = db.relationship('MoodleData', backref='user', cascade="all, delete-orphan")
 
     def __repr__(self):
         return f'<User {self.user_id}>'

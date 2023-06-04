@@ -1,5 +1,5 @@
 from flask_api import db
-from flask_api.database.models import Users
+from flask_api.database.models import Users, MoodleData as moo
 
 class Utiles:
     def initDB():
@@ -21,6 +21,12 @@ class Utiles:
 
     def queryUser(user_id):
         return Users.query.filter_by(user_id=user_id).first()
+
+    def queryMoodleData(user_id, assessment_name):
+        return moo.query.filter_by(user_id=user_id, assessment_name=assessment_name).first()
+    
+    def queryAllMoodleDataByUserID(user_id):
+        return moo.query.filter_by(user_id=user_id).all()
 
     def deleteData(data):
         '''delete data from database

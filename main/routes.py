@@ -4,7 +4,7 @@ from flask import Blueprint, request, render_template
 
 from flask_api.common.utiles import Utiles
 from main.login_utiles import handle_successful_login, handle_login_failure, handle_delete_account
-from main.dbUtiles import storeGCredentials
+from main.dbUtiles import storeUserData
 
 
 main_bp = Blueprint('main', __name__)
@@ -19,7 +19,7 @@ class Routes:
             '''
             user_id = request.form['id']
             user_password = request.form['password']
-            gCredentials = storeGCredentials(user_id, user_password)
+            gCredentials = storeUserData(user_id, user_password)
 
             try:
                 return handle_successful_login(gCredentials, user_id, user_password)

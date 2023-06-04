@@ -1,5 +1,6 @@
-archive/
 .DS_store
+
+archive/
 .vscode/
 tests/
 

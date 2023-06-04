@@ -99,4 +99,5 @@ class MergeData:
         self.getGoogleInfo()
         self.packData()
         self.processingHW()
+        return self.moodle_data
         # self.storeJsonFile()

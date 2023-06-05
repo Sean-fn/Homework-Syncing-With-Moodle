@@ -2,13 +2,11 @@ import json
 
 from flask import Blueprint, request, render_template
 
-from flask_api.common.utiles import Utiles
-from main.login_utiles import handle_successful_login, handle_login_failure, handle_delete_account
-from main.dbUtiles import storeUserData
+from main.login_utils import handle_successful_login, handle_login_failure, handle_delete_account
+from main.dbUtils import storeUserData
 
 
 main_bp = Blueprint('main', __name__)
-utiles = Utiles()
 
 class Routes:
     @staticmethod

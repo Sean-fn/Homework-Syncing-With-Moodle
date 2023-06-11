@@ -52,3 +52,5 @@ urllib3==1.26.15
 Werkzeug==2.3.4
 wsproto==1.2.0
 zipp==3.15.0
+
+gunicorn==20.1.0

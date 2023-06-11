@@ -1,7 +1,7 @@
 version: '3'
 services:
   flask-app:
-    restart: unless-stopped
+    # restart: unless-stopped
     build: 
       context: .
       dockerfile: Dockerfile.dev

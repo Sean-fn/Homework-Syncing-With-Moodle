@@ -1,6 +1,8 @@
-archive/
 .DS_store
+
+archive/
 .vscode/
+tests/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

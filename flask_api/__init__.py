@@ -16,7 +16,7 @@ def create_app():
     '''
     app = Flask(__name__, template_folder='../frontend/templates',static_folder='../frontend/static')
     app.secret_key = os.getenv("FLASK_SECRET_KEY")
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv("DATABASE_URL")
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URL")
     app.config.from_object(Config)
     db.init_app(app)
     with app.app_context():

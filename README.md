@@ -5,7 +5,7 @@ GR8 tool for students to manage their homework.
 
 ## Still under development
 
-### Platform Support
+### Platform Supported
 
 | Platform | Support |
 | - | - |
@@ -13,7 +13,7 @@ GR8 tool for students to manage their homework.
 | Google Task | No |
 | Web Dashboard | No |
 
-### School Support
+### School Supported
 
 | School | Support |
 | - | - |
@@ -21,7 +21,7 @@ GR8 tool for students to manage their homework.
 
 Currently only support CUTe Moodle, I will add more school support in the future.
 
-## Prerequisite
+## Prerequisites
 - Python 3.9 or above
 - Moodle Account
 - Google API Credentials, if you don't have one, please follow the steps below

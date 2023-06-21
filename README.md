@@ -53,6 +53,20 @@ or
 docker-compose up -f docker/docker-compose.yml
 ```
 
+## License
+
+This project is licensed under the MIT License. Feel free to modify and use the code according to your needs.
+
+Please note that this script is provided as is, without any warranty. Use it at your own risk.
+
+## Contributing
+
+If you have any suggestions or improvements for this script, feel free to contribute. You can fork the repository, make your changes, and submit a pull request.
+
+## Contact
+
+For any questions or inquiries, please contact f.sean122@gmail.com.
+
 ---
 ## Directory Structure
 ```
